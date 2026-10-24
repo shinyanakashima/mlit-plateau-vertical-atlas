@@ -1,9 +1,11 @@
-import { memo } from 'react'
+import { memo, useEffect, useState } from 'react'
 import {
   Area, AreaChart, CartesianGrid, Line, LineChart, ReferenceArea, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from 'recharts'
 import type { LevelProfile } from '../analysis/profile'
 import type { StrataRow } from '../analysis/strata'
+import { dataBaseUrl } from '../data/atlas'
+import type { AreaIndexEntry } from '../data/types'
 import { fmt } from '../lib/format'
 import { COLORS } from '../viewer/sliceTexture'
 
@@ -69,7 +71,7 @@ export const ProfileCharts = memo(function ProfileCharts({ profile, elevation, z
   }))
   const dz = profile.length > 1 ? profile[1].z - profile[0].z : 3
   const x = (
-    <XAxis dataKey="z" type="number" domain={[0, zMax]} {...AXIS} tickCount={8}
+    <XAxis dataKey="z" type="number" domain={[profile[0].z - dz / 2, zMax]} {...AXIS} tickCount={8}
       tickFormatter={(v: number) => `${Math.round(v)}`} unit="m" allowDecimals={false} />
   )
   const ref = <ReferenceLine x={elevation} stroke="#ff9a5c" strokeWidth={2} />
@@ -155,8 +157,9 @@ export function usageCategory(usage: string | null): number {
   return 5
 }
 
-export const StrataChart = memo(function StrataChart({ rows, z0, dz, elevation, zMax, onPick }: {
+export const StrataChart = memo(function StrataChart({ rows, z0, dz, elevation, zMax, onPick, areas, currentArea, groundTP }: {
   rows: StrataRow[] | null; z0: number; dz: number; elevation: number; zMax: number; onPick: (z: number) => void
+  areas: AreaIndexEntry[]; currentArea: string; groundTP: number
 }) {
   if (!rows) return <div className="charts one"><div className="chart"><div className="empty">建物IDのZarrチャンクを読み込んで地層図を作成しています…</div></div></div>
   const data = rows.map((r) => {
@@ -166,10 +169,10 @@ export const StrataChart = memo(function StrataChart({ rows, z0, dz, elevation, 
   })
   const names = Object.fromEntries(STRATA_CATEGORIES.map((c, i) => [`c${i}`, c]))
   return (
-    <div className="charts one">
+    <div className="charts two">
       <div className="chart">
         <div className="chart-title">
-          <span>都市の地層図 <span className="sub">高度ごとの建物占有率を用途別に積み上げ（PLATEAU 建物用途）</span></span>
+          <span>都市の地層図 <span className="sub">用途別の占有率（T.P.）</span></span>
           <div className="chart-legend">
             {STRATA_CATEGORIES.map((c, i) => <span key={c}><i className="sw" style={{ background: STRATA_COLORS[i] }} />{c}</span>)}
           </div>
@@ -178,7 +181,7 @@ export const StrataChart = memo(function StrataChart({ rows, z0, dz, elevation, 
           <ResponsiveContainer>
             <AreaChart data={data} margin={{ top: 6, right: 12, left: -4, bottom: 0 }} onClick={pickHandler(data as { z: number }[], onPick) as never}>
               {GRID}
-              <XAxis dataKey="z" type="number" domain={[0, zMax]} {...AXIS} tickCount={10} unit="m" tickFormatter={(v: number) => `${Math.round(v)}`} />
+              <XAxis dataKey="z" type="number" domain={[z0, zMax]} {...AXIS} tickCount={10} unit="m" tickFormatter={(v: number) => `${Math.round(v)}`} />
               <YAxis {...AXIS} unit="%" width={46} />
               <Tooltip content={<Tip unit="%" names={names} />} cursor={{ stroke: '#7d889e' }} />
               {STRATA_CATEGORIES.map((c, i) => (
@@ -189,6 +192,79 @@ export const StrataChart = memo(function StrataChart({ rows, z0, dz, elevation, 
           </ResponsiveContainer>
         </div>
       </div>
+      <CompareChart areas={areas} current={currentArea} heightAboveGround={elevation - groundTP} />
     </div>
   )
 })
+
+interface AreaProfile { id: string; title: string; z0: number; dz: number; groundMedianTP: number; ratio: Record<string, (number | null)[]> }
+const profileCache = new Map<string, Promise<AreaProfile>>()
+
+/** Occupancy profiles of all real areas against the height above their own ground. */
+function CompareChart({ areas, current, heightAboveGround }: { areas: AreaIndexEntry[]; current: string; heightAboveGround: number }) {
+  const real = areas.filter((a) => a.kind === 'plateau')
+  const [profiles, setProfiles] = useState<AreaProfile[] | null>(null)
+  useEffect(() => {
+    let alive = true
+    Promise.all(real.map((a) => {
+      let p = profileCache.get(a.id)
+      if (!p) {
+        p = fetch(`${dataBaseUrl()}${a.id}/profile.json`).then((r) => r.json() as Promise<AreaProfile>)
+        profileCache.set(a.id, p)
+      }
+      return p
+    })).then((ps) => alive && setProfiles(ps)).catch(() => alive && setProfiles([]))
+    return () => { alive = false }
+  }, [real.map((a) => a.id).join(',')])
+  const colors = ['#3987e5', '#d95926', '#199e70', '#c98500']
+  const step = 6
+  const rows: Record<string, number>[] = []
+  if (profiles) {
+    for (let h = 0; h <= 300; h += step) {
+      const row: Record<string, number> = { h }
+      for (const p of profiles) {
+        const k = Math.floor((p.groundMedianTP + h - p.z0) / p.dz)
+        const v = p.ratio.lod2?.[k]
+        if (v != null && k >= 0) row[p.id] = v
+      }
+      rows.push(row)
+    }
+  }
+  return (
+    <div className="chart">
+      <div className="chart-title">
+        <span>エリア比較 <span className="sub">地表からの高さ別の占有率（LOD2）</span></span>
+      </div>
+      <div className="chart-legend">
+        {(profiles ?? []).map((p, i) => (
+          <span key={p.id} style={{ fontWeight: p.id === current ? 700 : 400 }}>
+            <i className="sw" style={{ background: colors[i % colors.length], height: 3, width: 12 }} />{p.title}
+          </span>
+        ))}
+      </div>
+      <div className="chart-body">
+        {profiles && (
+          <ResponsiveContainer>
+            <LineChart data={rows} margin={{ top: 6, right: 12, left: -4, bottom: 0 }}>
+              {GRID}
+              <XAxis dataKey="h" type="number" domain={[0, 300]} {...AXIS} unit="m" ticks={[0, 50, 100, 150, 200, 250, 300]} />
+              <YAxis {...AXIS} unit="%" width={46} />
+              <Tooltip content={({ active, payload, label }) => active && payload?.length ? (
+                <div className="chart-tip">
+                  <div className="t">地表から {fmt(Number(label), 0)} m</div>
+                  {payload.map((p) => <div key={String(p.dataKey)}>{profiles.find((x) => x.id === p.dataKey)?.title}: <b className="num">{fmt(Number(p.value), 1)}%</b></div>)}
+                </div>
+              ) : null} cursor={{ stroke: '#7d889e' }} />
+              {profiles.map((p, i) => (
+                <Line key={p.id} type="stepAfter" dataKey={p.id} stroke={colors[i % colors.length]} strokeWidth={p.id === current ? 2.5 : 1.5}
+                  strokeOpacity={p.id === current ? 1 : 0.75} dot={false} isAnimationActive={false} connectNulls={false} />
+              ))}
+              <ReferenceLine x={Math.max(0, heightAboveGround)} stroke="#ff9a5c" strokeWidth={2} />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+    </div>
+  )
+}
+

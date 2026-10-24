@@ -7,7 +7,9 @@
 「空き空間がどうつながっているか（連結性）」を、ブラウザ上で解析・可視化するWebアプリです。
 PLATEAU LT11（2026年10月28日）での実演用プロトタイプとして作りました。
 
-- 実データ：PLATEAU 2025年度 東京都23区 建築物（千代田区・中央区のメッシュ 53394611／53394621）、東京駅を中心とした 512m 四方の139棟
+- 実データ：PLATEAU 2025年度 東京都23区 建築物
+  - 東京駅周辺：千代田区・中央区のメッシュ 53394611／53394621、東京駅を中心とした 512m 四方の139棟
+  - 西新宿 超高層ビル街：新宿区のメッシュ 53394525／53394535、都庁・新宿駅西口の 512m 四方の100棟（エリア比較用）
 - ボクセル：Zarr v3（`occupancy[z, y, x]`、uint8、1高度＝1チャンク）を zarrita で必要な高度だけHTTP取得
 - 表示：CesiumJS（建物シェルのglTF＋断面テクスチャ）、React + TypeScript、Recharts
 - バックエンドなし。Cloudflare Pages / GitHub Pages にそのまま置ける静的サイト
@@ -22,7 +24,7 @@ PLATEAU LT11（2026年10月28日）での実演用プロトタイプとして作
 | 建物からの離隔 | 厳密ユークリッド距離変換で「建物から d m 以上離れた空」だけを残して連結解析 |
 | 境界帯の除外 | 範囲の縁を回り込むだけで生じる「見かけの連結」を確認するため、外周の帯を除外 |
 | 2地点の連結判定 | 同一高度で A–B がつながるか、最短の通り道、**つながる最も低い標高** |
-| 都市の地層図 | 高度別占有率を建物用途別に積み上げ |
+| 都市の地層図 | 高度別占有率を建物用途別に積み上げ。地表からの高さでエリアどうしを比較 |
 | 空中のご近所さん | 床の標高（推定）から、同じ標高の別の建物のフロアや他の街の地面の高さと比較 |
 | 山の高さをビルで体感 | 断面の高さを高尾山・筑波山・富士山の獲得標高差と比較（標高断面つき） |
 | ドローン経路（実験） | 3D占有グリッド上のA*探索。**飛行計画ではありません** |
@@ -51,11 +53,12 @@ npm run dev          # http://localhost:5173/
 ```bash
 python3 -m pip install -r pipeline/requirements.txt
 npm run data:tokyo       # PLATEAU APIからCityGMLを取得 → ボクセル化 → public/data/tokyo-station/
+python3 pipeline/build_atlas.py nishi-shinjuku
 npm run data:synthetic   # 合成検証データ → public/data/synthetic/
 npm run data:reference   # 駅・山の標高（国土地理院 標高API）→ public/data/reference.json
 ```
 
-CityGML（約420MB）と地理院タイルは `pipeline/.cache/` にキャッシュされます（git管理外）。
+CityGML（東京駅 約420MB・西新宿 約220MB）と地理院タイルは `pipeline/.cache/` にキャッシュされます（git管理外）。
 対象範囲は `pipeline/areas.json` で変更できます（中心経緯度・一辺・解像度・メッシュ番号）。
 
 ## テスト

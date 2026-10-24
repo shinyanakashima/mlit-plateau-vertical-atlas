@@ -64,7 +64,8 @@ button, input, select { font: inherit; color: inherit; }
 .brand-sub { color: var(--muted); font-size: 12px; white-space: nowrap; }
 .header-spacer { flex: 1; }
 .header-group { display: flex; align-items: center; gap: 8px; }
-.header-label { color: var(--muted); font-size: 12px; }
+.header-label { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.header .badge { white-space: nowrap; }
 
 .select {
   appearance: none;
@@ -250,6 +251,7 @@ input[type='range'] { width: 100%; accent-color: var(--accent); margin: 6px 0 0;
 .bottom-head .tabs { border-bottom: 0; background: transparent; flex: 1; }
 .charts { flex: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 4px 12px 10px; min-height: 0; }
 .charts.one { grid-template-columns: minmax(0, 1fr); }
+.charts.two { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
 .chart { background: var(--panel-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 10px 4px; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
 .chart-title { display: flex; justify-content: space-between; align-items: baseline; font-size: 12.5px; font-weight: 700; gap: 8px; }
 .chart-title .cur { font-weight: 700; color: var(--text); }
@@ -279,9 +281,14 @@ kbd { background: var(--panel-3); border: 1px solid var(--border-strong); border
 .list-item:hover { border-color: var(--border-strong); }
 .list-item .r { color: var(--text-2); white-space: nowrap; }
 
+@media (max-width: 1720px) {
+  .header-label { display: none; }
+}
+@media (max-width: 1480px) {
+  .brand-sub { display: none; }
+}
 @media (max-width: 1280px) {
   .app { grid-template-columns: minmax(0, 1fr) 356px; }
-  .brand-sub { display: none; }
 }
 
 /* ---------- LT demo bar ---------- */

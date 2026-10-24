@@ -36,7 +36,7 @@ export default function Header(p: Props) {
         <span className="header-label">対象エリア</span>
         <select className="select" value={p.areaId ?? ''} onChange={(e) => p.onArea(e.target.value)} aria-label="対象エリア">
           {p.areas.map((a) => (
-            <option key={a.id} value={a.id}>{a.title}（{a.subtitle}）</option>
+            <option key={a.id} value={a.id}>{a.title}・{a.subtitle}</option>
           ))}
         </select>
         {p.synthetic ? <span className="badge warn">合成データ</span> : <span className="badge real">PLATEAU実データ</span>}

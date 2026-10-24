@@ -1,0 +1,126 @@
+{
+  "attributes": {
+    "atlas_version": 1,
+    "area_id": "nishi-shinjuku",
+    "title": "\u897f\u65b0\u5bbf \u8d85\u9ad8\u5c64\u30d3\u30eb\u8857",
+    "subtitle": "\u90fd\u5e81\u30fb\u65b0\u5bbf\u99c5\u897f\u53e3 512m\u56db\u65b9",
+    "crs": {
+      "horizontal": "EPSG:6677",
+      "name": "JGD2011 / Japan Plane Rectangular CS IX",
+      "vertical": "T.P. (\u6771\u4eac\u6e7e\u5e73\u5747\u6d77\u9762, JGD2011)",
+      "axis_order": "x=easting, y=northing"
+    },
+    "grid": {
+      "epsg": 6677,
+      "x0": -12958.0,
+      "y1": -34074.0,
+      "nx": 256,
+      "ny": 256,
+      "dx": 2.0,
+      "z0": 30.0,
+      "nz": 90,
+      "dz": 3.0,
+      "x1": -12446.0,
+      "y0": -34586.0,
+      "y_index_origin": "north",
+      "z_sample": "level centre z0 + (k + 0.5) * dz"
+    },
+    "corners_lonlat": {
+      "nw": [
+        139.6901558615732,
+        35.69278987394635
+      ],
+      "ne": [
+        139.6958131136607,
+        35.69279646954758
+      ],
+      "se": [
+        139.6958210349621,
+        35.688181466224556
+      ],
+      "sw": [
+        139.6901641087353,
+        35.688174871737665
+      ]
+    },
+    "enu": {
+      "enu_to_grid": [
+        0.4999504835679415,
+        0.0007143930671953466,
+        128.52019558172609,
+        0.00071439306789012,
+        -0.4999504836565033,
+        127.20772831561028
+      ],
+      "grid_to_enu": [
+        2.000194001280624,
+        0.0028581325037022385,
+        -257.4289007890021,
+        0.002858132506457535,
+        -2.000194000926408,
+        254.07280729963165
+      ],
+      "max_residual_m": 2.0627428455100016e-05,
+      "origin_lonlat": [
+        139.693,
+        35.6905
+      ],
+      "origin_height_ellipsoid": 0.0
+    },
+    "center_lonlat": [
+      139.693,
+      35.6905
+    ],
+    "display": {
+      "height_offset_m": -33.48161315917969,
+      "base_tp_m": 33.48161315917969,
+      "note": "Cesium ellipsoidal height = T.P. + height_offset_m (globe without terrain)"
+    },
+    "codes": {
+      "0": "free",
+      "1": "building",
+      "255": "not judged (below ground / no data)"
+    },
+    "lods": {
+      "lod1": "LOD1 prism: footprint \u00d7 [ground, measured top]",
+      "lod2": "LOD2 vertical ray casting of roof/ground/installation surfaces"
+    },
+    "ground": {
+      "source": "\u56fd\u571f\u5730\u7406\u9662 \u6a19\u9ad8\u30bf\u30a4\u30eb (DEM5A\u2192DEM5B\u2192DEM10B)",
+      "pixels": {
+        "dem5a_png": 65536,
+        "dem5b_png": 0,
+        "dem_png": 0,
+        "missing": 0
+      }
+    },
+    "sources": {
+      "buildings": "\u56fd\u571f\u4ea4\u901a\u7701 Project PLATEAU 3D\u90fd\u5e02\u30e2\u30c7\u30eb (CityGML, \u5efa\u7bc9\u7269)",
+      "files": [
+        {
+          "mesh": "53394525",
+          "city_code": "13104",
+          "city_name": "\u65b0\u5bbf\u533a",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/84/48ebed-93d8-4196-bdda-e1db9590d3d1/13104_shinjuku-ku_pref_2025_citygml_1_op/udx/bldg/53394525_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/84/48ebed-93d8-4196-bdda-e1db9590d3d1/13104_shinjuku-ku_pref_2025_citygml_1_op.zip"
+        },
+        {
+          "mesh": "53394535",
+          "city_code": "13104",
+          "city_name": "\u65b0\u5bbf\u533a",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/84/48ebed-93d8-4196-bdda-e1db9590d3d1/13104_shinjuku-ku_pref_2025_citygml_1_op/udx/bldg/53394535_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/84/48ebed-93d8-4196-bdda-e1db9590d3d1/13104_shinjuku-ku_pref_2025_citygml_1_op.zip"
+        }
+      ],
+      "license": "PLATEAU: CC BY 4.0 \u4e92\u63db\uff08PLATEAU\u5229\u7528\u898f\u7d04\uff09 / \u5730\u7406\u9662\u30bf\u30a4\u30eb: \u56fd\u571f\u5730\u7406\u9662\u30b3\u30f3\u30c6\u30f3\u30c4\u5229\u7528\u898f\u7d04"
+    },
+    "building_count": 100,
+    "generated_at": "2026-10-24T11:05:46+0000"
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}

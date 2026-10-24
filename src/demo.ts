@@ -99,3 +99,29 @@ export const SYNTHETIC_STEPS: DemoStep[] = [
     clearanceM: 5, pair: 'preset', sideTab: 'pair',
   },
 ]
+
+/** Area-independent walkthrough for real areas other than Tokyo Station. */
+export const GENERIC_STEPS: DemoStep[] = [
+  {
+    title: 'この街を、標高3mごとに輪切りにする',
+    body: (c) => `PLATEAUの建物を2m×2m×3mのボクセルに変換。地表すぐ上の断面では、判定できる面積の${pct(c.occupancyAt(c.groundTP + 3))}を建物が占めています。`,
+    elevation: 'ground', mode: 'occupancy', clearanceM: 0, marginM: 0, lod: 'lod2', sideTab: 'analysis',
+    bottomTab: 'profile', pair: 'clear', select: 'none', playing: false, upperMode: 'ghost', camera: 'home',
+  },
+  { title: '上へ動かす', body: () => '断面を上下に動かして、高さごとの建物の占め方を見ます。', playing: true },
+  {
+    title: '離隔10mで空のつながりを見る',
+    body: () => '建物から10m以上離れた空だけを残して連結領域を色分けします。',
+    playing: false, elevation: 'ground', mode: 'components', clearanceM: 10, pair: 'preset', sideTab: 'pair',
+  },
+  {
+    title: '何メートルからつながるのか？',
+    body: (c) => (c.pairLowest != null ? `AとBが同じ高さでつながる最も低い断面は T.P. ${c.pairLowest.toFixed(1)} m です。` : '全高度の連結を計算しています…'),
+    elevation: 'pairLowest',
+  },
+  {
+    title: '都市の地層図とエリア比較',
+    body: () => '用途別の積み上げと、ほかのエリアとの比較（地表からの高さ）です。',
+    bottomTab: 'strata', mode: 'occupancy', clearanceM: 0, pair: 'clear', sideTab: 'analysis', elevation: 'ground',
+  },
+]

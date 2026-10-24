@@ -49,7 +49,7 @@ export function AboutModal({ atlas, onClose }: { atlas: Atlas | null; onClose: (
                 </li>
               ))}
               <li>地表面の標高：{a.ground.source}</li>
-              <li>航空写真・背景地図：国土地理院 地理院タイル（全国最新写真（シームレス）・淡色地図）</li>
+              <li>航空写真：国土地理院 地理院タイル（全国最新写真（シームレス））。中心部は同梱、周辺はオンライン取得</li>
               <li>ライセンス：{a.sources.license}</li>
             </ul>
             <h4>ボクセル化の仕様</h4>
@@ -58,8 +58,8 @@ export function AboutModal({ atlas, onClose }: { atlas: Atlas | null; onClose: (
               <li>格子：{g.nx}×{g.ny}×{g.nz}（水平 {g.dx} m、鉛直 {g.dz} m、標高 {g.z0}〜{fmt(g.z0 + g.nz * g.dz, 0)} m）</li>
               <li>原点（北西隅）：X={fmt(g.x0, 1)} m, Y={fmt(g.y1, 1)} m。配列は occupancy[z, y, x]（y=0が北端）</li>
               <li>値：0=空き、1=建物、255=判定対象外（地表面より下）。各セルは中心点で判定</li>
-              <li>LOD1：{a.lods.lod1}。LOD2：{a.lods.lod2}</li>
-              <li>表示上の高さ：楕円体高 = T.P. {fmt(a.display.height_offset_m, 2)} m（地形なしの地球儀に建物を接地させるための一律補正）</li>
+              <li>LOD1：建物の底面形状を地表から上端まで押し出した箱。LOD2：屋根・底面・附属物の面を鉛直方向にレイキャストして内外を判定</li>
+              <li>表示上の高さ：楕円体高 = T.P. {a.display.height_offset_m < 0 ? '−' : '+'} {fmt(Math.abs(a.display.height_offset_m), 2)} m（地形なしの地球儀に建物を接地させるための一律補正）</li>
             </ul>
           </>
         )}

@@ -10,7 +10,7 @@ import { AboutModal, HelpModal } from './components/Modals'
 import SidePanel, { type SideTab } from './components/SidePanel'
 import { HoverTip, Legend } from './components/Overlays'
 import DemoBar from './components/DemoBar'
-import { SYNTHETIC_STEPS, TOKYO_STEPS, type DemoContext, type DemoStep } from './demo'
+import { GENERIC_STEPS, SYNTHETIC_STEPS, TOKYO_STEPS, type DemoContext, type DemoStep } from './demo'
 import { PRESET_PAIRS } from './presets'
 import { Atlas, loadIndex } from './data/atlas'
 import type { AreaIndexEntry, Lod } from './data/types'
@@ -292,7 +292,8 @@ export default function App() {
   }, [atlas])
 
   // ---- LT demo walkthrough ------------------------------------------------------------------
-  const demoSteps: DemoStep[] = atlas?.attrs.synthetic ? SYNTHETIC_STEPS : TOKYO_STEPS
+  const demoSteps: DemoStep[] = atlas?.attrs.synthetic ? SYNTHETIC_STEPS
+    : atlas?.attrs.area_id === 'tokyo-station' ? TOKYO_STEPS : GENERIC_STEPS
   const applyStep = useCallback((step: DemoStep) => {
     if (!atlas) return
     if (step.lod) setLod(step.lod)
@@ -531,7 +532,7 @@ export default function App() {
         </div>
         {bottomOpen && atlas && (bottomTab === 'profile'
           ? <ProfileCharts profile={profile} elevation={chartElevation} zMax={zMax} onPick={setElev} clearanceM={clearanceM} hasPair={pair.a != null && pair.b != null} current={chartCurrent} />
-          : <StrataChart rows={strata} z0={atlas.grid.z0} dz={atlas.grid.dz} elevation={chartElevation} zMax={zMax} onPick={setElev} />)}
+          : <StrataChart rows={strata} z0={atlas.grid.z0} dz={atlas.grid.dz} elevation={chartElevation} zMax={zMax} onPick={setElev} areas={areas} currentArea={atlas.attrs.area_id} groundTP={groundTP} />)}
       </div>
       {help && <HelpModal onClose={() => { setHelp(false); try { localStorage.setItem('pva-help-seen', '1') } catch { /* private mode */ } }} />}
       {about && <AboutModal atlas={atlas} onClose={() => setAbout(false)} />}

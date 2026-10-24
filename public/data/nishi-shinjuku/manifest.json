@@ -1,0 +1,34 @@
+{
+ "id": "nishi-shinjuku",
+ "title": "西新宿 超高層ビル街",
+ "subtitle": "都庁・新宿駅西口 512m四方",
+ "kind": "plateau",
+ "zarr": "atlas.zarr",
+ "buildings": "buildings.json",
+ "models": {
+  "lod1": "lod1.glb",
+  "lod2": "lod2.glb"
+ },
+ "ortho": {
+  "file": "ortho.jpg",
+  "rectangle": [
+   139.6856689453125,
+   35.68407153314098,
+   139.70077514648438,
+   35.69745580725805
+  ],
+  "zoom": 18,
+  "layer": "seamlessphoto",
+  "attribution": "地理院タイル（全国最新写真・シームレス）"
+ },
+ "glb": {
+  "lod1": {
+   "vertices": 6458,
+   "triangles": 3894
+  },
+  "lod2": {
+   "vertices": 73304,
+   "triangles": 34202
+  }
+ }
+}

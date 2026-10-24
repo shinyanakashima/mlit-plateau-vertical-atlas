@@ -172,6 +172,13 @@ def main() -> None:
     }
     (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1))
     (out / "stats.json").write_text(json.dumps(stats, separators=(",", ":")))
+    # light-weight profile for cross-area comparison in the UI (heights above the median ground)
+    (out / "profile.json").write_text(json.dumps({
+        "id": args.area, "title": cfg["title"], "z0": grid.z0, "dz": grid.dz,
+        "groundMedianTP": float(np.nanmedian(ground)),
+        "ratio": {lod: [round(r["ratio"], 3) if r["ratio"] is not None else None for r in st]
+                  for lod, st in stats.items()},
+    }, ensure_ascii=False, separators=(",", ":")))
     nod = [int((occ1[k] == NODATA).sum()) for k in range(grid.nz)]
     log(f"stats written; NODATA per level (first 5): {nod[:5]}")
 

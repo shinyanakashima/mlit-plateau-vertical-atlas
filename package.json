@@ -12,6 +12,7 @@
     "test:e2e": "node scripts/e2e.mjs",
     "data:synthetic": "python3 pipeline/build_synthetic.py",
     "data:tokyo": "python3 pipeline/build_atlas.py tokyo-station",
+    "data:shinjuku": "python3 pipeline/build_atlas.py nishi-shinjuku",
     "data:reference": "python3 pipeline/build_reference.py",
     "deploy:cloudflare": "npm run build && wrangler pages deploy dist"
   },

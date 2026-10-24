@@ -134,7 +134,7 @@ class FsStore {
   }
 }
 
-for (const area of ['synthetic', 'tokyo-station']) {
+for (const area of ['synthetic', 'tokyo-station', 'nishi-shinjuku']) {
   const dir = resolve(__dirname, '../../public/data', area)
   describe.skipIf(!existsSync(`${dir}/stats.json`))(`python parity: ${area}`, () => {
     it('matches pipeline/atlas/analysis.py level by level', async () => {
