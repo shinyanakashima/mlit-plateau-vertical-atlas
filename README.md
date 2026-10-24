@@ -85,6 +85,7 @@ npm run test:e2e                 # 実ブラウザでのE2E（Playwright）
 - [docs/TECHNICAL.md](docs/TECHNICAL.md) 技術仕様（座標系・ボクセル化・Zarr構成・解析アルゴリズム・採用判断）
 - [docs/DEMO.md](docs/DEMO.md) 5分間LTの実演シナリオと当日のチェックリスト
 - [docs/TESTING.md](docs/TESTING.md) テスト結果と既知の制約
+- [docs/DEPLOY.md](docs/DEPLOY.md) 公開手順（Cloudflare Pages／ConoHa WING／GitHub Pages）
 
 ## データ出典・ライセンス
 

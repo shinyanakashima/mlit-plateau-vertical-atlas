@@ -1,0 +1,18 @@
+# For Apache-compatible static hosting (ConoHa WING etc.).  Cloudflare Pages uses _headers instead.
+ErrorDocument 404 /404.html
+Options -Indexes
+
+<IfModule mod_headers.c>
+  <If "%{REQUEST_URI} =~ m#/data/#">
+    Header set Access-Control-Allow-Origin "*"
+    Header set Cache-Control "public, max-age=3600"
+  </If>
+  <If "%{REQUEST_URI} =~ m#/assets/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType application/json .json
+  AddType model/gltf-binary .glb
+</IfModule>

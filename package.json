@@ -14,7 +14,7 @@
     "data:tokyo": "python3 pipeline/build_atlas.py tokyo-station",
     "data:shinjuku": "python3 pipeline/build_atlas.py nishi-shinjuku",
     "data:reference": "python3 pipeline/build_reference.py",
-    "deploy:cloudflare": "npm run build && wrangler pages deploy dist"
+    "deploy:cloudflare": "npm run build && npx wrangler pages deploy dist --project-name plateau-vertical-atlas --branch main"
   },
   "dependencies": {
     "@fontsource/noto-sans-jp": "^5.3.1",
