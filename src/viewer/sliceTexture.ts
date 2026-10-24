@@ -47,21 +47,17 @@ export interface TextureOptions {
   marginCells: number
 }
 
-const canvases = [document.createElement('canvas'), document.createElement('canvas')]
-let flip = 0
 const SCALE = 2 // 2x upscale so NODATA hatching and cell edges stay crisp
 
 /**
- * Render a slice to a canvas.  Two canvases alternate so that Cesium sees a new image object
- * (and re-uploads the texture) every time.
+ * Render a slice to a new canvas.  Cesium re-uploads a Material image uniform only when the
+ * object reference changes, so every render returns a fresh (small, 512²) canvas.
  */
 export function renderSlice(level: Uint8Array, an: SliceAnalysis, o: TextureOptions): HTMLCanvasElement {
   const { nx, ny } = o
-  const canvas = canvases[(flip ^= 1)]
-  if (canvas.width !== nx * SCALE) {
-    canvas.width = nx * SCALE
-    canvas.height = ny * SCALE
-  }
+  const canvas = document.createElement('canvas')
+  canvas.width = nx * SCALE
+  canvas.height = ny * SCALE
   const ctx = canvas.getContext('2d')!
   const img = ctx.createImageData(nx * SCALE, ny * SCALE)
   const px = img.data

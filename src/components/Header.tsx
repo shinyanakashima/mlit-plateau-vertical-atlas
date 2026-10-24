@@ -11,6 +11,8 @@ interface Props {
   onTop: () => void
   onHelp: () => void
   onAbout: () => void
+  demoActive: boolean
+  onDemo: () => void
 }
 
 export default function Header(p: Props) {
@@ -47,6 +49,7 @@ export default function Header(p: Props) {
         </div>
       </div>
       <div className="header-group">
+        <button className={`btn ${p.demoActive ? 'active' : ''}`} onClick={p.onDemo} title="LT用のガイド付きデモ（→で次へ）">{p.demoActive ? 'デモ終了' : '▶ LTデモ'}</button>
         <button className="btn" onClick={p.onHome} title="初期視点に戻る（H）">初期視点</button>
         <button className="btn" onClick={p.onTop} title="真上から見る（T）">真上</button>
         <button className="btn" onClick={p.onAbout}>出典・制約</button>

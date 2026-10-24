@@ -1,13 +1,19 @@
 {
-  "name": "web",
+  "name": "plateau-vertical-atlas",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "tsc -b && oxlint src",
+    "test": "vitest run",
+    "test:e2e": "node scripts/e2e.mjs",
+    "data:synthetic": "python3 pipeline/build_synthetic.py",
+    "data:tokyo": "python3 pipeline/build_atlas.py tokyo-station",
+    "data:reference": "python3 pipeline/build_reference.py",
+    "deploy:cloudflare": "npm run build && wrangler pages deploy dist"
   },
   "dependencies": {
     "@fontsource/noto-sans-jp": "^5.3.1",

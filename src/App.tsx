@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { runProfile, runRoute, runStrata } from './analysis/client'
 import { lowestConnectedLevel, stableConnectedLevel, type LevelProfile } from './analysis/profile'
 import type { RouteResult } from './analysis/route3d'
@@ -9,6 +9,9 @@ import Header from './components/Header'
 import { AboutModal, HelpModal } from './components/Modals'
 import SidePanel, { type SideTab } from './components/SidePanel'
 import { HoverTip, Legend } from './components/Overlays'
+import DemoBar from './components/DemoBar'
+import { SYNTHETIC_STEPS, TOKYO_STEPS, type DemoContext, type DemoStep } from './demo'
+import { PRESET_PAIRS } from './presets'
 import { Atlas, loadIndex } from './data/atlas'
 import type { AreaIndexEntry, Lod } from './data/types'
 import { floorLabel, fmt, median } from './lib/format'
@@ -28,6 +31,7 @@ function readUrl() {
     z: q.get('z') ? Number(q.get('z')) : null,
     mode: q.get('mode') as ViewMode | null,
     demo: q.has('demo'),
+    tour: q.has('tour'),
   }
 }
 
@@ -68,6 +72,8 @@ export default function App() {
   const [routeMaxTP, setRouteMaxTP] = useState(120)
   const [modelError, setModelError] = useState<string | null>(null)
   const sceneRef = useRef<AtlasScene | null>(null)
+  const [demoIndex, setDemoIndex] = useState<number | null>(null)
+  const [demoWantsPairLowest, setDemoWantsPairLowest] = useState(false)
 
   // ---- area index & atlas loading ---------------------------------------------------------
   useEffect(() => {
@@ -170,6 +176,9 @@ export default function App() {
   }, [atlas, volume, bottomTab, strata, lod])
 
   const current = profile?.[k] ?? null
+  // charts follow the slice with low priority so that dragging/playing stays smooth
+  const chartElevation = useDeferredValue(elevation)
+  const chartCurrent = useDeferredValue(current)
 
   // pair: path on the current level
   const path2d = useMemo(() => {
@@ -249,24 +258,6 @@ export default function App() {
     setHover(p ? { pick: p, x, y } : null)
   }, [])
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (!atlas || (e.target as HTMLElement)?.tagName === 'INPUT' || (e.target as HTMLElement)?.tagName === 'SELECT') return
-      const dz = atlas.grid.dz
-      if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); setElev(Math.min(zMax - 0.01, atlas.levelCenter(k) + dz)) }
-      else if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); setElev(Math.max(atlas.grid.z0, atlas.levelCenter(k) - dz)) }
-      else if (e.key === ' ') { e.preventDefault(); setPlaying((p) => !p) }
-      else if (e.key === '1') setMode('occupancy')
-      else if (e.key === '2') setMode('components')
-      else if (e.key === '3') setMode('clearance')
-      else if (e.key === 'h' || e.key === 'H') sceneRef.current?.flyHome()
-      else if (e.key === 't' || e.key === 'T') sceneRef.current?.viewTop()
-      else if (e.key === 'Escape') { setPickMode(null); setHelp(false); setAbout(false) }
-      else if (e.key === '?') setHelp(true)
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [atlas, k, zMax, setElev])
 
   const runRoute3D = useCallback(() => {
     if (!atlas || !volume || pair.a == null || pair.b == null) return
@@ -300,6 +291,91 @@ export default function App() {
       .map((b) => ({ name: b.alias ?? b.name!, tp: b.lod2TopTP! }))
   }, [atlas])
 
+  // ---- LT demo walkthrough ------------------------------------------------------------------
+  const demoSteps: DemoStep[] = atlas?.attrs.synthetic ? SYNTHETIC_STEPS : TOKYO_STEPS
+  const applyStep = useCallback((step: DemoStep) => {
+    if (!atlas) return
+    if (step.lod) setLod(step.lod)
+    if (step.mode) setMode(step.mode)
+    if (step.clearanceM != null) setClearanceM(step.clearanceM)
+    if (step.marginM != null) setMarginM(step.marginM)
+    if (step.upperMode) setUpperMode(step.upperMode)
+    if (step.sideTab) setSideTab(step.sideTab)
+    if (step.bottomTab) { setBottomTab(step.bottomTab); setBottomOpen(true) }
+    if (step.pair === 'clear') setPair({ a: null, b: null })
+    if (step.pair === 'preset') {
+      const pr = PRESET_PAIRS[atlas.attrs.area_id]
+      if (pr) setPair({ a: pr.a[1] * atlas.grid.nx + pr.a[0], b: pr.b[1] * atlas.grid.nx + pr.b[0] })
+    }
+    let elev: number | null = null
+    if (step.elevation === 'ground') elev = atlas.levelCenter(atlas.levelOf(groundTP + 3))
+    else if (typeof step.elevation === 'number') elev = step.elevation
+    setDemoWantsPairLowest(step.elevation === 'pairLowest')
+    if (step.select === 'tallest') {
+      const t = atlas.buildings.filter((b) => (b.gridCells ?? 0) > 60)
+        .reduce((m, b) => ((b.measuredHeight ?? 0) > (m?.measuredHeight ?? 0) ? b : m), atlas.buildings[0])
+      // put the slice at the estimated 40th floor so the neighbour panel opens there
+      elev = (t.groundTP ?? groundTP) + 39 * 4 + 1.5
+      setSelected(t.id)
+    }
+    if (step.select === 'none') setSelected(null)
+    if (elev != null) setElevation(elev)
+    if (step.playing != null) setPlaying(step.playing)
+    else if (elev != null) setPlaying(false)
+    if (step.camera === 'home') sceneRef.current?.flyHome()
+    if (step.camera === 'top') sceneRef.current?.viewTop()
+  }, [atlas, groundTP])
+
+  const goDemo = useCallback((i: number) => {
+    const n = Math.max(0, Math.min(demoSteps.length - 1, i))
+    setDemoIndex(n)
+    setHelp(false)
+    applyStep(demoSteps[n])
+  }, [demoSteps, applyStep])
+
+  useEffect(() => {
+    if (demoWantsPairLowest && pairInfo?.lowest != null) {
+      setElevation(pairInfo.lowest)
+      setDemoWantsPairLowest(false)
+    }
+  }, [demoWantsPairLowest, pairInfo])
+
+  const tourStarted = useRef(false)
+  useEffect(() => {
+    if (url.tour && atlas && !tourStarted.current) {
+      tourStarted.current = true
+      goDemo(0)
+    }
+  }, [url.tour, atlas, goDemo])
+
+  const demoCtx: DemoContext = {
+    pairLowest: pairInfo?.lowest ?? null,
+    groundTP,
+    occupancyAt: (tp) => (atlas && profile ? profile[atlas.levelOf(tp)]?.ratio ?? null : null),
+  }
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!atlas || (e.target as HTMLElement)?.tagName === 'INPUT' || (e.target as HTMLElement)?.tagName === 'SELECT') return
+      const dz = atlas.grid.dz
+      if (demoIndex != null && (e.key === 'ArrowRight' || e.key === 'PageDown')) { e.preventDefault(); goDemo(demoIndex + 1); return }
+      if (demoIndex != null && (e.key === 'ArrowLeft' || e.key === 'PageUp')) { e.preventDefault(); goDemo(demoIndex - 1); return }
+      if (demoIndex != null && e.key === 'Escape') { setDemoIndex(null); setPlaying(false); return }
+      if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); setElev(Math.min(zMax - 0.01, atlas.levelCenter(k) + dz)) }
+      else if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); setElev(Math.max(atlas.grid.z0, atlas.levelCenter(k) - dz)) }
+      else if (e.key === ' ') { e.preventDefault(); setPlaying((p) => !p) }
+      else if (e.key === '1') setMode('occupancy')
+      else if (e.key === '2') setMode('components')
+      else if (e.key === '3') setMode('clearance')
+      else if (e.key === 'h' || e.key === 'H') sceneRef.current?.flyHome()
+      else if (e.key === 't' || e.key === 'T') sceneRef.current?.viewTop()
+      else if (e.key === 'Escape') { setPickMode(null); setHelp(false); setAbout(false) }
+      else if (e.key === '?') setHelp(true)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [atlas, k, zMax, setElev, demoIndex, goDemo])
+
   const synthetic = atlas?.attrs.synthetic === true
   const selectedInfo = selected && atlas ? atlas.building(selected) ?? null : null
 
@@ -315,6 +391,8 @@ export default function App() {
         onHome={() => sceneRef.current?.flyHome()}
         onTop={() => sceneRef.current?.viewTop()}
         onHelp={() => setHelp(true)}
+        demoActive={demoIndex != null}
+        onDemo={() => (demoIndex == null ? goDemo(0) : (setDemoIndex(null), setPlaying(false)))}
         onAbout={() => setAbout(true)}
       />
       <div className="viewer-wrap">
@@ -367,6 +445,11 @@ export default function App() {
           </div>
         )}
         {atlas && <Legend mode={mode} clearanceM={clearanceM} marginM={marginM} />}
+        {atlas && demoIndex != null && (
+          <DemoBar steps={demoSteps} index={demoIndex} ctx={demoCtx}
+            onPrev={() => goDemo(demoIndex - 1)} onNext={() => goDemo(demoIndex + 1)}
+            onClose={() => { setDemoIndex(null); setPlaying(false) }} />
+        )}
         {atlas && hover && analysis && level && (
           <HoverTip hover={hover} atlas={atlas} level={level} bid={bidLevel} analysis={analysis} mode={mode} />
         )}
@@ -447,8 +530,8 @@ export default function App() {
           <button className="btn ghost small" onClick={() => setBottomOpen((o) => !o)}>{bottomOpen ? '折りたたむ' : '開く'}</button>
         </div>
         {bottomOpen && atlas && (bottomTab === 'profile'
-          ? <ProfileCharts profile={profile} elevation={elevation} zMax={zMax} onPick={setElev} clearanceM={clearanceM} hasPair={pair.a != null && pair.b != null} current={current} />
-          : <StrataChart rows={strata} z0={atlas.grid.z0} dz={atlas.grid.dz} elevation={elevation} zMax={zMax} onPick={setElev} />)}
+          ? <ProfileCharts profile={profile} elevation={chartElevation} zMax={zMax} onPick={setElev} clearanceM={clearanceM} hasPair={pair.a != null && pair.b != null} current={chartCurrent} />
+          : <StrataChart rows={strata} z0={atlas.grid.z0} dz={atlas.grid.dz} elevation={chartElevation} zMax={zMax} onPick={setElev} />)}
       </div>
       {help && <HelpModal onClose={() => { setHelp(false); try { localStorage.setItem('pva-help-seen', '1') } catch { /* private mode */ } }} />}
       {about && <AboutModal atlas={atlas} onClose={() => setAbout(false)} />}

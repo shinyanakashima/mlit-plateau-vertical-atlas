@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import {
   Area, AreaChart, CartesianGrid, Line, LineChart, ReferenceArea, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from 'recharts'
@@ -57,7 +58,7 @@ function abSpans(profile: LevelProfile[], dz: number) {
   return spans
 }
 
-export function ProfileCharts({ profile, elevation, zMax, onPick, clearanceM, hasPair, current }: Props) {
+export const ProfileCharts = memo(function ProfileCharts({ profile, elevation, zMax, onPick, clearanceM, hasPair, current }: Props) {
   if (!profile) return <div className="charts one"><div className="chart"><div className="empty">高度別の解析を計算しています…</div></div></div>
   const data = profile.map((p) => ({
     z: p.z,
@@ -83,7 +84,7 @@ export function ProfileCharts({ profile, elevation, zMax, onPick, clearanceM, ha
         </div>
         <div className="chart-body">
           <ResponsiveContainer>
-            <AreaChart data={data} margin={{ top: 6, right: 8, left: -14, bottom: 0 }} onClick={click as never}>
+            <AreaChart data={data} margin={{ top: 6, right: 8, left: -4, bottom: 0 }} onClick={click as never}>
               {GRID}
               {x}
               <YAxis {...AXIS} unit="%" width={46} domain={[0, (m: number) => Math.max(10, Math.ceil(m / 10) * 10)]} />
@@ -101,7 +102,7 @@ export function ProfileCharts({ profile, elevation, zMax, onPick, clearanceM, ha
         </div>
         <div className="chart-body">
           <ResponsiveContainer>
-            <LineChart data={data} margin={{ top: 6, right: 8, left: -14, bottom: 0 }} onClick={click as never}>
+            <LineChart data={data} margin={{ top: 6, right: 8, left: -4, bottom: 0 }} onClick={click as never}>
               {GRID}
               {x}
               <YAxis {...AXIS} unit="%" width={46} domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} />
@@ -121,7 +122,7 @@ export function ProfileCharts({ profile, elevation, zMax, onPick, clearanceM, ha
         </div>
         <div className="chart-body">
           <ResponsiveContainer>
-            <LineChart data={data} margin={{ top: 6, right: 8, left: -14, bottom: 0 }} onClick={click as never}>
+            <LineChart data={data} margin={{ top: 6, right: 8, left: -4, bottom: 0 }} onClick={click as never}>
               {GRID}
               {x}
               <YAxis {...AXIS} width={46} allowDecimals={false} />
@@ -139,7 +140,7 @@ export function ProfileCharts({ profile, elevation, zMax, onPick, clearanceM, ha
       </div>
     </div>
   )
-}
+})
 
 export const STRATA_CATEGORIES = ['業務', '商業', '宿泊', '住宅', '公共・文教', '運輸・その他']
 export const STRATA_COLORS = ['#3987e5', '#d95926', '#199e70', '#c98500', '#d55181', '#9085e9']
@@ -154,7 +155,7 @@ export function usageCategory(usage: string | null): number {
   return 5
 }
 
-export function StrataChart({ rows, z0, dz, elevation, zMax, onPick }: {
+export const StrataChart = memo(function StrataChart({ rows, z0, dz, elevation, zMax, onPick }: {
   rows: StrataRow[] | null; z0: number; dz: number; elevation: number; zMax: number; onPick: (z: number) => void
 }) {
   if (!rows) return <div className="charts one"><div className="chart"><div className="empty">建物IDのZarrチャンクを読み込んで地層図を作成しています…</div></div></div>
@@ -175,7 +176,7 @@ export function StrataChart({ rows, z0, dz, elevation, zMax, onPick }: {
         </div>
         <div className="chart-body">
           <ResponsiveContainer>
-            <AreaChart data={data} margin={{ top: 6, right: 12, left: -14, bottom: 0 }} onClick={pickHandler(data as { z: number }[], onPick) as never}>
+            <AreaChart data={data} margin={{ top: 6, right: 12, left: -4, bottom: 0 }} onClick={pickHandler(data as { z: number }[], onPick) as never}>
               {GRID}
               <XAxis dataKey="z" type="number" domain={[0, zMax]} {...AXIS} tickCount={10} unit="m" tickFormatter={(v: number) => `${Math.round(v)}`} />
               <YAxis {...AXIS} unit="%" width={46} />
@@ -190,4 +191,4 @@ export function StrataChart({ rows, z0, dz, elevation, zMax, onPick }: {
       </div>
     </div>
   )
-}
+})

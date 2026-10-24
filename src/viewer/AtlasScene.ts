@@ -77,7 +77,7 @@ function makeShader(translucent: boolean) {
       u_slice: { type: UniformType.FLOAT, value: 0 },
       u_selected: { type: UniformType.FLOAT, value: -1 },
       u_hmax: { type: UniformType.FLOAT, value: 200 },
-      u_ghost: { type: UniformType.FLOAT, value: 0.16 },
+      u_ghost: { type: UniformType.FLOAT, value: 0.11 },
       u_cut: { type: UniformType.FLOAT, value: 0 },
     },
     translucencyMode: translucent ? CustomShaderTranslucencyMode.TRANSLUCENT : CustomShaderTranslucencyMode.OPAQUE,
@@ -143,13 +143,14 @@ export class AtlasScene {
 
     // context base map (online).  If tiles cannot be loaded the bundled aerial photo still shows.
     this.baseLayer = v.imageryLayers.addImageryProvider(new UrlTemplateImageryProvider({
-      url: 'https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',
+      url: 'https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg',
+      minimumLevel: 2,
       maximumLevel: 18,
-      credit: new Credit('<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">地理院タイル（淡色地図）</a>'),
+      credit: new Credit('<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">地理院タイル（全国最新写真）</a>'),
     }))
-    this.baseLayer.brightness = 0.42
-    this.baseLayer.saturation = 0.2
-    this.baseLayer.contrast = 1.1
+    this.baseLayer.brightness = 0.45
+    this.baseLayer.saturation = 0.35
+    this.baseLayer.contrast = 1.05
 
     this.handler = new ScreenSpaceEventHandler(scene.canvas)
     let pending: Cartesian2 | null = null

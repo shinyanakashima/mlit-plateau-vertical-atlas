@@ -7,6 +7,7 @@ import type { BuildingInfo } from '../data/types'
 import { fmt, fmtArea } from '../lib/format'
 import type { UpperMode } from '../viewer/AtlasScene'
 import { COLORS, type ViewMode } from '../viewer/sliceTexture'
+import { PRESET_PAIRS } from '../presets'
 import ElevationSlider from './ElevationSlider'
 import { MountainPanel, NeighborPanel } from './Explore'
 
@@ -59,7 +60,7 @@ const TABS: [SideTab, string][] = [
   ['pair', '2地点'],
   ['neighbors', 'ご近所さん'],
   ['mountain', '山と比べる'],
-  ['route', '経路（実験）'],
+  ['route', '経路'],
 ]
 
 function Metric({ k, v, unit, bar, color, title }: { k: string; v: string; unit?: string; bar?: number | null; color?: string; title?: string }) {
@@ -72,11 +73,6 @@ function Metric({ k, v, unit, bar, color, title }: { k: string; v: string; unit?
   )
 }
 
-/** Demo pairs: west (Marunouchi) ↔ east (Yaesu) of Tokyo Station, chosen on open ground. */
-const PRESET_PAIRS: Record<string, { a: [number, number]; b: [number, number]; label: string }> = {
-  'tokyo-station': { a: [30, 110], b: [236, 150], label: '丸の内側 ↔ 八重洲側' },
-  synthetic: { a: [40, 32], b: [56, 32], label: '壁の西 ↔ 壁の東' },
-}
 
 export default function SidePanel(p: Props) {
   const a = p.atlas

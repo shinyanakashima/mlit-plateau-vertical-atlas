@@ -231,7 +231,7 @@ input[type='range'] { width: 100%; accent-color: var(--accent); margin: 6px 0 0;
 
 .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); padding: 0 16px; background: #0c121d; }
 .tabs button {
-  border: 0; background: transparent; padding: 10px 10px 9px; cursor: pointer; color: var(--muted);
+  border: 0; background: transparent; padding: 10px 9px 9px; cursor: pointer; color: var(--muted);
   border-bottom: 2px solid transparent; font-size: 13px; white-space: nowrap;
 }
 .tabs button.on { color: var(--text); border-bottom-color: var(--accent); font-weight: 700; }
@@ -283,3 +283,19 @@ kbd { background: var(--panel-3); border: 1px solid var(--border-strong); border
   .app { grid-template-columns: minmax(0, 1fr) 356px; }
   .brand-sub { display: none; }
 }
+
+/* ---------- LT demo bar ---------- */
+.demo-bar {
+  position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 4;
+  width: min(620px, calc(100% - 460px)); min-width: 420px; padding: 12px 16px 12px;
+  border-color: rgba(255, 154, 92, 0.45);
+}
+.demo-head { display: flex; align-items: center; gap: 10px; }
+.demo-count { color: var(--accent); font-weight: 700; font-size: 12px; }
+.demo-dots { display: flex; gap: 4px; flex: 1; }
+.demo-dots i { width: 18px; height: 3px; border-radius: 2px; background: var(--panel-3); }
+.demo-dots i.done { background: rgba(255, 154, 92, 0.45); }
+.demo-dots i.on { background: var(--accent); }
+.demo-title { font-size: 19px; font-weight: 700; margin-top: 6px; }
+.demo-body { color: var(--text-2); font-size: 14px; margin-top: 4px; line-height: 1.6; }
+.demo-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
