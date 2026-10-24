@@ -1,0 +1,126 @@
+{
+  "attributes": {
+    "atlas_version": 1,
+    "area_id": "tokyo-station",
+    "title": "\u6771\u4eac\u99c5\u5468\u8fba",
+    "subtitle": "\u4e38\u306e\u5185\u30fb\u516b\u91cd\u6d32 512m\u56db\u65b9",
+    "crs": {
+      "horizontal": "EPSG:6677",
+      "name": "JGD2011 / Japan Plane Rectangular CS IX",
+      "vertical": "T.P. (\u6771\u4eac\u6e7e\u5e73\u5747\u6d77\u9762, JGD2011)",
+      "axis_order": "x=easting, y=northing"
+    },
+    "grid": {
+      "epsg": 6677,
+      "x0": -6252.0,
+      "y1": -35112.0,
+      "nx": 256,
+      "ny": 256,
+      "dx": 2.0,
+      "z0": 0.0,
+      "nz": 82,
+      "dz": 3.0,
+      "x1": -5740.0,
+      "y0": -35624.0,
+      "y_index_origin": "north",
+      "z_sample": "level centre z0 + (k + 0.5) * dz"
+    },
+    "corners_lonlat": {
+      "nw": [
+        139.7642607918162,
+        35.683498976166234
+      ],
+      "ne": [
+        139.76991740106035,
+        35.68350208857469
+      ],
+      "se": [
+        139.76992105263537,
+        35.67888706761521
+      ],
+      "sw": [
+        139.76426476910584,
+        35.67888395573266
+      ]
+    },
+    "enu": {
+      "enu_to_grid": [
+        0.49995010802217027,
+        0.00033709624900674345,
+        128.4074170262371,
+        0.00033709624996351473,
+        -0.49995010811150364,
+        127.61506627151194
+      ],
+      "grid_to_enu": [
+        2.0001986784841437,
+        0.0013486535173242366,
+        -257.01245435143255,
+        0.0013486535211558385,
+        -2.0001986781267256,
+        255.08230975021772
+      ],
+      "max_residual_m": 9.797865743621514e-06,
+      "origin_lonlat": [
+        139.7671,
+        35.6812
+      ],
+      "origin_height_ellipsoid": 0.0
+    },
+    "center_lonlat": [
+      139.7671,
+      35.6812
+    ],
+    "display": {
+      "height_offset_m": -2.8136603832244873,
+      "base_tp_m": 2.8136603832244873,
+      "note": "Cesium ellipsoidal height = T.P. + height_offset_m (globe without terrain)"
+    },
+    "codes": {
+      "0": "free",
+      "1": "building",
+      "255": "not judged (below ground / no data)"
+    },
+    "lods": {
+      "lod1": "LOD1 prism: footprint \u00d7 [ground, measured top]",
+      "lod2": "LOD2 vertical ray casting of roof/ground/installation surfaces"
+    },
+    "ground": {
+      "source": "\u56fd\u571f\u5730\u7406\u9662 \u6a19\u9ad8\u30bf\u30a4\u30eb (DEM5A\u2192DEM5B\u2192DEM10B)",
+      "pixels": {
+        "dem5a_png": 65536,
+        "dem5b_png": 0,
+        "dem_png": 0,
+        "missing": 0
+      }
+    },
+    "sources": {
+      "buildings": "\u56fd\u571f\u4ea4\u901a\u7701 Project PLATEAU 3D\u90fd\u5e02\u30e2\u30c7\u30eb (CityGML, \u5efa\u7bc9\u7269)",
+      "files": [
+        {
+          "mesh": "53394611",
+          "city_code": "13101",
+          "city_name": "\u5343\u4ee3\u7530\u533a",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/5d/dc07c5-ace7-465a-9c99-53f6d78f6164/13101_chiyoda-ku_pref_2025_citygml_1_op/udx/bldg/53394611_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/5d/dc07c5-ace7-465a-9c99-53f6d78f6164/13101_chiyoda-ku_pref_2025_citygml_1_op.zip"
+        },
+        {
+          "mesh": "53394621",
+          "city_code": "13101",
+          "city_name": "\u5343\u4ee3\u7530\u533a",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/5d/dc07c5-ace7-465a-9c99-53f6d78f6164/13101_chiyoda-ku_pref_2025_citygml_1_op/udx/bldg/53394621_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/5d/dc07c5-ace7-465a-9c99-53f6d78f6164/13101_chiyoda-ku_pref_2025_citygml_1_op.zip"
+        }
+      ],
+      "license": "PLATEAU: CC BY 4.0 \u4e92\u63db\uff08PLATEAU\u5229\u7528\u898f\u7d04\uff09 / \u5730\u7406\u9662\u30bf\u30a4\u30eb: \u56fd\u571f\u5730\u7406\u9662\u30b3\u30f3\u30c6\u30f3\u30c4\u5229\u7528\u898f\u7d04"
+    },
+    "building_count": 139,
+    "generated_at": "2026-10-24T10:44:09+0000"
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}

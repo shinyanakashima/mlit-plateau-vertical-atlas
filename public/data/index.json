@@ -1,0 +1,7 @@
+{
+  "default": "tokyo-station",
+  "areas": [
+    { "id": "tokyo-station", "title": "東京駅周辺", "subtitle": "丸の内・八重洲 512m四方", "kind": "plateau" },
+    { "id": "synthetic", "title": "合成テストデータ", "subtitle": "検証用・実在しない街区", "kind": "synthetic" }
+  ]
+}

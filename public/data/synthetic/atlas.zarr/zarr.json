@@ -1,0 +1,100 @@
+{
+  "attributes": {
+    "atlas_version": 1,
+    "area_id": "synthetic",
+    "title": "\u5408\u6210\u30c6\u30b9\u30c8\u30c7\u30fc\u30bf",
+    "subtitle": "\u691c\u8a3c\u7528\u30fb\u5b9f\u5728\u3057\u306a\u3044\u8857\u533a 128m\u56db\u65b9",
+    "synthetic": true,
+    "crs": {
+      "horizontal": "EPSG:6677",
+      "name": "JGD2011 / Japan Plane Rectangular CS IX",
+      "vertical": "T.P.",
+      "axis_order": "x=easting, y=northing"
+    },
+    "grid": {
+      "epsg": 6677,
+      "x0": -3086.0,
+      "y1": -44314.0,
+      "nx": 64,
+      "ny": 64,
+      "dx": 2.0,
+      "z0": 0.0,
+      "nz": 11,
+      "dz": 3.0,
+      "x1": -2958.0,
+      "y0": -44442.0,
+      "y_index_origin": "north",
+      "z_sample": "level centre z0 + (k + 0.5) * dz"
+    },
+    "corners_lonlat": {
+      "nw": [
+        139.79927419297653,
+        35.60056920075992
+      ],
+      "ne": [
+        139.80068688556204,
+        35.60056959173593
+      ],
+      "se": [
+        139.8006873541266,
+        35.599415820388685
+      ],
+      "sw": [
+        139.79927468181705,
+        35.59941542942921
+      ]
+    },
+    "enu": {
+      "enu_to_grid": [
+        0.4999500275952968,
+        0.00016931577391608965,
+        32.870943677157896,
+        0.00016931577252712247,
+        -0.4999500275993381,
+        31.5849712144631
+      ],
+      "grid_to_enu": [
+        2.000199680187339,
+        0.0006773984161417582,
+        -65.76984663998182,
+        0.0006773984105688306,
+        -2.000199680171191,
+        63.15398259638457
+      ],
+      "max_residual_m": 3.078543073797846e-07,
+      "origin_lonlat": [
+        139.8,
+        35.6
+      ],
+      "origin_height_ellipsoid": 0.0
+    },
+    "center_lonlat": [
+      139.8,
+      35.6
+    ],
+    "display": {
+      "height_offset_m": -1.0,
+      "base_tp_m": 1.0
+    },
+    "codes": {
+      "0": "free",
+      "1": "building",
+      "255": "not judged (below ground / no data)"
+    },
+    "lods": {
+      "lod1": "synthetic prisms",
+      "lod2": "identical to lod1"
+    },
+    "ground": {
+      "source": "synthetic flat ground T.P. 1.0 m with a 5.0 m mound"
+    },
+    "sources": {
+      "buildings": "\u5408\u6210\u30c7\u30fc\u30bf\uff08\u691c\u8a3c\u7528\u30fb\u5b9f\u5728\u3057\u307e\u305b\u3093\uff09",
+      "files": [],
+      "license": "CC0"
+    },
+    "building_count": 4
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}

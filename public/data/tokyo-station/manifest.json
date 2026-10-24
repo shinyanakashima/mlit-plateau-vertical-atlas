@@ -1,0 +1,34 @@
+{
+ "id": "tokyo-station",
+ "title": "東京駅周辺",
+ "subtitle": "丸の内・八重洲 512m四方",
+ "kind": "plateau",
+ "zarr": "atlas.zarr",
+ "buildings": "buildings.json",
+ "models": {
+  "lod1": "lod1.glb",
+  "lod2": "lod2.glb"
+ },
+ "ortho": {
+  "file": "ortho.jpg",
+  "rectangle": [
+   139.75982666015625,
+   35.674031853779056,
+   139.77493286132812,
+   35.688533207388744
+  ],
+  "zoom": 18,
+  "layer": "seamlessphoto",
+  "attribution": "地理院タイル（全国最新写真・シームレス）"
+ },
+ "glb": {
+  "lod1": {
+   "vertices": 7850,
+   "triangles": 4670
+  },
+  "lod2": {
+   "vertices": 138774,
+   "triangles": 61756
+  }
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "id": "synthetic",
+ "title": "合成テストデータ",
+ "subtitle": "検証用・実在しない街区 128m四方",
+ "kind": "synthetic",
+ "zarr": "atlas.zarr",
+ "buildings": "buildings.json",
+ "models": {
+  "lod1": "lod1.glb",
+  "lod2": "lod2.glb"
+ },
+ "ortho": null,
+ "glb": {
+  "lod1": {
+   "vertices": 120,
+   "triangles": 60
+  }
+ }
+}
