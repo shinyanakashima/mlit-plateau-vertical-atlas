@@ -3,7 +3,7 @@
 `npm run build` で作られる `dist/`（約55MB・約1,900ファイル、最大ファイル約5MB）を静的ホスティングに置くだけです。
 パスはすべて相対なので、ドメイン直下でもサブディレクトリでも動きます。サーバー側の処理は不要です。
 
-リポジトリは private のため、GitHub Pages は有料プランが必要です。次の A か B を使ってください。
+現在は C の GitHub Pages で公開しています。A・B は別の公開先を使う場合の手順です。
 
 ## A. Cloudflare Pages（推奨）
 
@@ -47,11 +47,11 @@ CIから実行する場合は、`CLOUDFLARE_API_TOKEN`（権限：Cloudflare Pag
 
 `public/.htaccess` で、データのCORS・キャッシュ、`.glb` のMIMEタイプ、404ページを設定しています。
 
-## C. GitHub Pages（リポジトリを public にする、または有料プランの場合）
+## C. GitHub Pages（現在の公開先）
 
 1. Settings → Pages → Source を **GitHub Actions** にする
 2. Actions → **Deploy to GitHub Pages** → **Run workflow**
-3. `main` へのpushごとに自動公開したい場合は、Settings → Secrets and variables → Actions → Variables に `DEPLOY_GH_PAGES` = `true`
+3. 以降は `main` へのpushごとに自動で公開されます（公開URL：https://shinyanakashima.github.io/mlit-plateau-vertical-atlas/）
 
 ## 大きなデータをR2に分ける場合（任意）
 

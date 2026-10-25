@@ -77,7 +77,7 @@ npm run test:e2e                 # 実ブラウザでのE2E（Playwright）
 ビルド成果物 `dist/` は相対パスで構成しているため、ドメイン直下でもサブパスでも動きます。
 
 - **Cloudflare Pages**：`npm run deploy:cloudflare`（`wrangler pages deploy dist`）。またはダッシュボードでビルドコマンド `npm run build`、出力 `dist`。`public/_headers` でデータのCORS・キャッシュを設定済み
-- **GitHub Pages**：Settings → Pages → Source を「GitHub Actions」にして、Actions の「Deploy to GitHub Pages」を手動実行（リポジトリ変数 `DEPLOY_GH_PAGES=true` で main へのpushごとに自動）
+- **GitHub Pages**：main へのpushごとに自動公開 → https://shinyanakashima.github.io/mlit-plateau-vertical-atlas/ （LTデモは `?tour`）
 - **データをR2へ移す**：`public/data/` をR2バケットに置き、`VITE_DATA_BASE_URL=https://<bucket-domain>/data/ npm run build`。R2側にCORS（GET, `*`）を設定してください
 
 ## ドキュメント
