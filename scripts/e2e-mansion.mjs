@@ -67,6 +67,12 @@ await check('LT demo advances with the keyboard', async () => {
   await page.locator('.mn-led:has-text("8F")').waitFor({ timeout: 5000 })
   await page.keyboard.press('Escape')
 })
+await check('sound button cycles なし → チャイム → アナウンス', async () => {
+  const b = page.locator('button:has-text("音：")')
+  const seen = new Set()
+  for (let i = 0; i < 3; i++) { seen.add((await b.innerText()).trim()); await b.click() }
+  for (const t of ['音：なし', '音：チャイム', '音：アナウンス']) if (!seen.has(t)) throw new Error(`missing state ${t}: ${[...seen]}`)
+})
 await check('definitions dialog states it is not a real vacancy rate', async () => {
   await page.click('button:has-text("物件概要")')
   await page.locator('.mn-about:has-text("実際の住宅の空室率ではありません")').waitFor({ timeout: 5000 })

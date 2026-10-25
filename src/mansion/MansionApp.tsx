@@ -10,6 +10,7 @@ import { MansionScene, medianGround } from './MansionScene'
 import { renderSection } from './sectionTexture'
 import { AboutDialog, DemoPanel, FloorGuide, FloorPlan, type CellInfo } from './parts'
 import { MANSION_STEPS } from './demo'
+import { elevatorSound, floorAnnouncement, type SoundMode } from './sound'
 import './mansion.css'
 
 interface MansionConfig {
@@ -48,6 +49,21 @@ export default function MansionApp() {
   const sceneRef = useRef<MansionScene | null>(null)
   const host = useRef<HTMLDivElement>(null)
   const elevRef = useRef(representativeElevation(9))
+  const [sound, setSound] = useState<SoundMode>(elevatorSound.mode)
+  const prevFloor = useRef<number | null>(null)
+  const ridingRef = useRef(false)
+  ridingRef.current = riding
+
+  // audio may only start after a user gesture
+  useEffect(() => {
+    const unlock = () => elevatorSound.unlock()
+    window.addEventListener('pointerdown', unlock)
+    window.addEventListener('keydown', unlock)
+    return () => {
+      window.removeEventListener('pointerdown', unlock)
+      window.removeEventListener('keydown', unlock)
+    }
+  }, [])
   const query = useMemo(() => new URLSearchParams(location.search), [])
 
   // ---- load config and both areas -------------------------------------------------------------
@@ -107,6 +123,11 @@ export default function MansionApp() {
     const from = elevRef.current
     const t0 = performance.now()
     const dur = Math.min(900, 250 + Math.abs(target - from) * 12)
+    // sounds only for a real floor change (not the initial placement or a data reload)
+    const prev = prevFloor.current
+    const moved = prev != null && prev !== floor && areas.length === 2
+    prevFloor.current = floor
+    if (moved) elevatorSound.hum(dur / 1000)
     let raf = 0
     const tick = (t: number) => {
       const p = Math.min(1, (t - t0) / dur)
@@ -114,7 +135,13 @@ export default function MansionApp() {
       elevRef.current = e
       try { sceneRef.current?.setFloor(floor, e) } catch (err) { console.error('setFloor failed', (err as Error).message, (err as Error).stack) }
       if (p < 1) raf = requestAnimationFrame(tick)
-      else setArrived((n) => n + 1)
+      else {
+        setArrived((n) => n + 1)
+        if (moved) {
+          elevatorSound.chime(floor > prev! ? 1 : -1, ridingRef.current ? 0.6 : 1)
+          elevatorSound.announce(floorAnnouncement(floor))
+        }
+      }
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
@@ -223,8 +250,8 @@ export default function MansionApp() {
       if ((e.target as HTMLElement)?.tagName === 'INPUT') return
       if (demo != null && (e.key === 'ArrowRight' || e.key === 'PageDown')) { e.preventDefault(); applyDemo(demo + 1); return }
       if (demo != null && (e.key === 'ArrowLeft' || e.key === 'PageUp')) { e.preventDefault(); applyDemo(demo - 1); return }
-      if (e.key === 'ArrowUp') { e.preventDefault(); setRiding(false); go(floor + 1) }
-      else if (e.key === 'ArrowDown') { e.preventDefault(); setRiding(false); go(floor - 1) }
+      if (e.key === 'ArrowUp') { e.preventDefault(); elevatorSound.click(); setRiding(false); go(floor + 1) }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); elevatorSound.click(); setRiding(false); go(floor - 1) }
       else if (e.key === ' ') { e.preventDefault(); setRiding((r) => !r) }
       else if (e.key === 'h' || e.key === 'H') sceneRef.current?.flyHome()
       else if (e.key === 'Escape') { setDemo(null); setAbout(false); setCell(null) }
@@ -289,13 +316,26 @@ export default function MansionApp() {
           </div>
           <button className={`btn mn-demo-btn ${demo != null ? 'active' : ''}`} onClick={() => (demo == null ? applyDemo(0) : setDemo(null))}>{demo != null ? 'デモ終了' : '▶ LTデモ'}</button>
           <button className="btn" onClick={() => sceneRef.current?.flyHome()}>視点を戻す</button>
+          <button
+            className={`btn ${sound !== 'off' ? 'active' : ''}`}
+            title="エレベーターの音（チャイム／アナウンス）"
+            onClick={() => {
+              const next: SoundMode = sound === 'off' ? 'chime' : sound === 'chime' ? 'voice' : 'off'
+              elevatorSound.setMode(next)
+              setSound(next)
+              if (next !== 'off') elevatorSound.chime(1)
+              if (next === 'voice') elevatorSound.announce(floorAnnouncement(floor))
+            }}
+          >
+            {sound === 'off' ? '音：なし' : sound === 'chime' ? '音：チャイム' : '音：アナウンス'}
+          </button>
           <button className="btn" onClick={() => setAbout(true)}>物件概要・出典</button>
         </div>
       </header>
 
       <FloorGuide
-        floor={floor} maxFloor={maxFloor} onFloor={(f) => { setRiding(false); go(f) }}
-        riding={riding} onRide={() => setRiding((r) => !r)} table={table} labels={areas.map((a) => a.label)}
+        floor={floor} maxFloor={maxFloor} onFloor={(f) => { elevatorSound.click(); setRiding(false); go(f) }}
+        riding={riding} onRide={() => { elevatorSound.click(); setRiding((r) => !r) }} table={table} labels={areas.map((a) => a.label)}
         progress={areas.map((a) => [a.loaded, a.atlas.grid.nz])} arrived={arrived}
       />
 
