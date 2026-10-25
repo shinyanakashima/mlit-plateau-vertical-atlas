@@ -12,7 +12,7 @@ from .grid import Grid
 
 
 def write_atlas(path: Path, grid: Grid, attrs: dict, volumes: dict[str, dict[str, np.ndarray]],
-                ground: np.ndarray) -> None:
+                ground: np.ndarray, extra2d: dict[str, tuple[np.ndarray, dict]] | None = None) -> None:
     if path.exists():
         shutil.rmtree(path)
     root = zarr.open_group(zarr.storage.LocalStore(str(path)), mode="w", zarr_format=3)
@@ -39,3 +39,9 @@ def write_atlas(path: Path, grid: Grid, attrs: dict, volumes: dict[str, dict[str
         attributes={"units": "m", "datum": "T.P."},
     )
     gr[:] = ground
+    for name, (arr, a) in (extra2d or {}).items():
+        x = root.create_array(
+            name, shape=arr.shape, chunks=arr.shape, dtype=arr.dtype, fill_value=0,
+            compressors=[GzipCodec(level=6)], dimension_names=["y", "x"], attributes=a,
+        )
+        x[:] = arr

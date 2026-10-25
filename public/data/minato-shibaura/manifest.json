@@ -1,0 +1,47 @@
+{
+ "id": "minato-shibaura",
+ "title": "港区 芝浦",
+ "subtitle": "芝浦アイランド・田町駅東口 512m四方",
+ "kind": "plateau",
+ "zarr": "atlas.zarr",
+ "buildings": "buildings.json",
+ "models": {
+  "lod1": "lod1.glb",
+  "lod2": "lod2.glb"
+ },
+ "ortho": {
+  "file": "ortho.jpg",
+  "rectangle": [
+   139.7406005859375,
+   35.63497665067731,
+   139.75570678710938,
+   35.64836915737426
+  ],
+  "zoom": 18,
+  "layer": "seamlessphoto",
+  "attribution": "地理院タイル（全国最新写真・シームレス）"
+ },
+ "glb": {
+  "lod1": {
+   "vertices": 16606,
+   "triangles": 9954
+  },
+  "lod2": {
+   "vertices": 31034,
+   "triangles": 19074
+  }
+ },
+ "mansion": {
+  "models": {
+   "lod1": "lod1_abs.glb",
+   "lod2": "lod2_abs.glb"
+  },
+  "terrain": "terrain.glb",
+  "terrain_info": {
+   "vertices": 18693,
+   "triangles": 33794,
+   "base_tp": -3.0,
+   "step_cells": 2
+  }
+ }
+}

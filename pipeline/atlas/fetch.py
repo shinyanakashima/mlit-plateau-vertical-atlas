@@ -68,3 +68,39 @@ def plateau_bldg_files(meshes: list[str], cache: Path) -> tuple[list[Path], list
                     "dataset_zip": city.get("url"),
                 })
     return paths, sources
+
+
+# --- JIS X 0410 standard area mesh (3rd order, ~1 km) ---------------------------------------
+def mesh3_code(lat: float, lon: float) -> str:
+    p = int(lat * 1.5)
+    u = int(lon - 100)
+    r1 = lat * 1.5 - p
+    r2 = (lon - 100) - u
+    q = int(r1 * 8)
+    v = int(r2 * 8)
+    r = int((r1 * 8 - q) * 10)
+    w = int((r2 * 8 - v) * 10)
+    return f"{p:02d}{u:02d}{q}{v}{r}{w}"
+
+
+def mesh3_bounds(code: str) -> tuple[float, float, float, float]:
+    """(lon0, lat0, lon1, lat1) of a 3rd-order mesh."""
+    p, u, q, v, r, w = int(code[:2]), int(code[2:4]), int(code[4]), int(code[5]), int(code[6]), int(code[7])
+    lat0 = p / 1.5 + q * (5 / 60) + r * (0.5 / 60)
+    lon0 = u + 100 + v * (7.5 / 60) + w * (0.75 / 60)
+    return lon0, lat0, lon0 + 0.75 / 60, lat0 + 0.5 / 60
+
+
+def meshes_for_bbox(bbox: tuple[float, float, float, float]) -> list[str]:
+    lon0, lat0, lon1, lat1 = bbox
+    codes: list[str] = []
+    lat = lat0
+    while lat <= lat1 + 1e-9:
+        lon = lon0
+        while lon <= lon1 + 1e-9:
+            c = mesh3_code(lat, lon)
+            if c not in codes:
+                codes.append(c)
+            lon = min(lon + 0.002, lon1) if lon < lon1 else lon1 + 1
+        lat = min(lat + 0.002, lat1) if lat < lat1 else lat1 + 1
+    return codes

@@ -25,11 +25,12 @@ sys.path.insert(0, str(Path(__file__).parent))
 from atlas import analysis  # noqa: E402
 from atlas.citygml import parse_buildings  # noqa: E402
 from atlas.dem import ground_grid  # noqa: E402
-from atlas.fetch import plateau_bldg_files  # noqa: E402
+from atlas.fetch import mesh3_bounds, meshes_for_bbox, plateau_bldg_files  # noqa: E402
 from atlas.gltf import build_glb  # noqa: E402
 from atlas.grid import grid_enu_affine, grid_for_area  # noqa: E402
 from atlas.ortho import build_ortho  # noqa: E402
 from atlas.store import write_atlas  # noqa: E402
+from atlas.terrain_gltf import build_terrain_glb  # noqa: E402
 from atlas.voxelize import BUILDING, NODATA, voxelize_lod1, voxelize_lod2  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -60,7 +61,9 @@ def main() -> None:
     lats = [c[1] for c in corners.values()]
     bbox = (min(lons), min(lats), max(lons), max(lats))
 
-    paths, sources = plateau_bldg_files(cfg["meshes"], CACHE)
+    meshes = cfg["meshes"] if isinstance(cfg.get("meshes"), list) else meshes_for_bbox(bbox)
+    log(f"meshes: {meshes}")
+    paths, sources = plateau_bldg_files(meshes, CACHE)
     log(f"citygml files: {[p.name for p in paths]}")
     buildings = parse_buildings(paths, bbox, grid.epsg)
     log(f"parsed {len(buildings)} buildings intersecting the area")
@@ -76,6 +79,17 @@ def main() -> None:
     log(f"LOD1 voxelized: {int((occ1 == BUILDING).sum())} building voxels")
     occ2, bid2 = voxelize_lod2(buildings, grid, ground)
     log(f"LOD2 voxelized: {int((occ2 == BUILDING).sum())} building voxels")
+
+    # PLATEAU building coverage: cells inside a 3rd-order mesh for which a bldg file exists
+    covered = {s["mesh"] for s in sources}
+    xc, yc = grid.cell_centers()
+    CX, CY = np.meshgrid(xc, yc)
+    clon, clat = grid.to_lonlat().transform(CX, CY)
+    coverage = np.zeros((grid.ny, grid.nx), dtype=np.uint8)
+    for m in covered:
+        l0, b0, l1, b1 = mesh3_bounds(m)
+        coverage[(clon >= l0) & (clon < l1) & (clat >= b0) & (clat < b1)] = 1
+    log(f"PLATEAU bldg coverage: {coverage.mean() * 100:.1f}% of cells, DEM missing: {int(np.isnan(ground).sum())} cells")
 
     enu_affine = grid_enu_affine(grid, *cfg["center_lonlat"])
     log(f"ENU<->grid affine residual {enu_affine['max_residual_m']:.4f} m")
@@ -116,7 +130,9 @@ def main() -> None:
     }
     write_atlas(out / "atlas.zarr", grid, attrs,
                 {"lod1": {"occupancy": occ1, "building": bid1},
-                 "lod2": {"occupancy": occ2, "building": bid2}}, ground)
+                 "lod2": {"occupancy": occ2, "building": bid2}}, ground,
+                extra2d={"coverage": (coverage, {
+                    "description": "1 = inside a PLATEAU bldg CityGML mesh (buildings surveyed), 0 = not covered"})})
     log("zarr written")
 
     # building attributes (+ footprint inside the grid, from the LOD2 voxels)
@@ -163,12 +179,28 @@ def main() -> None:
                             out / "ortho.jpg", CACHE)
         log(f"ortho written {ortho}")
 
+    mansion = None
+    if cfg.get("mansion"):
+        # absolute-height meshes (T.P.) for the side-by-side "model room" of the LT11 mansion prototype
+        glb, _ = build_glb(lod1_polys, lon0, lat0, 0.0)
+        (out / "lod1_abs.glb").write_bytes(glb)
+        glb, _ = build_glb(lod2_polys, lon0, lat0, 0.0)
+        (out / "lod2_abs.glb").write_bytes(glb)
+        base = min(0.0, float(np.floor(np.nanmin(ground))) - 2.0)
+        tglb, tinfo = build_terrain_glb(grid, ground, lon0, lat0, base,
+                                        out / "ortho.jpg" if ortho else None, ortho["rectangle"] if ortho else None)
+        (out / "terrain.glb").write_bytes(tglb)
+        mansion = {"models": {"lod1": "lod1_abs.glb", "lod2": "lod2_abs.glb"}, "terrain": "terrain.glb",
+                   "terrain_info": tinfo}
+        log(f"mansion meshes written: terrain {tinfo}")
+
     stats = {lod: analysis.level_stats(o, grid.dx) for lod, o in (("lod1", occ1), ("lod2", occ2))}
     manifest = {
         "id": args.area, "title": cfg["title"], "subtitle": cfg.get("subtitle", ""),
         "kind": "plateau", "zarr": "atlas.zarr", "buildings": "buildings.json",
         "models": {"lod1": "lod1.glb", "lod2": "lod2.glb"}, "ortho": ortho,
         "glb": {"lod1": info1, "lod2": info2},
+        **({"mansion": mansion} if mansion else {}),
     }
     (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1))
     (out / "stats.json").write_text(json.dumps(stats, separators=(",", ":")))

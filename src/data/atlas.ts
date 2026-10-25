@@ -27,6 +27,8 @@ export class Atlas {
   readonly attrs: AtlasAttrs
   readonly buildings: BuildingInfo[]
   readonly ground: Float32Array
+  /** 1 where PLATEAU buildings were surveyed (null for datasets without the layer) */
+  readonly coverage: Uint8Array | null
   private readonly occArrays: Record<Lod, U8Array>
   private readonly bidArrays: Record<Lod, U16Array>
   private readonly levelCache = new Map<string, Promise<Uint8Array>>()
@@ -35,12 +37,13 @@ export class Atlas {
   chunkRequests = 0
 
   private constructor(base: string, manifest: Manifest, attrs: AtlasAttrs, buildings: BuildingInfo[],
-    ground: Float32Array, occ: Record<Lod, U8Array>, bid: Record<Lod, U16Array>) {
+    ground: Float32Array, occ: Record<Lod, U8Array>, bid: Record<Lod, U16Array>, coverage: Uint8Array | null) {
     this.base = base
     this.manifest = manifest
     this.attrs = attrs
     this.buildings = buildings
     this.ground = ground
+    this.coverage = coverage
     this.occArrays = occ
     this.bidArrays = bid
   }
@@ -63,8 +66,16 @@ export class Atlas {
     for (const a of [b1, b2]) if (!a.is('uint16')) throw new Error('building index must be uint16')
     if (!g.is('float32')) throw new Error('ground must be float32')
     const groundChunk = await zarr.get(g, null)
+    // optional layer (added for the LT11 mansion areas)
+    let coverage: Uint8Array | null = null
+    try {
+      const c = await zarr.open.v3(root.resolve('coverage'), { kind: 'array' })
+      if (c.is('uint8')) coverage = (await zarr.get(c, null)).data as Uint8Array
+    } catch {
+      coverage = null
+    }
     return new Atlas(base, manifest, attrs, buildings, groundChunk.data as Float32Array,
-      { lod1: o1 as U8Array, lod2: o2 as U8Array }, { lod1: b1 as U16Array, lod2: b2 as U16Array })
+      { lod1: o1 as U8Array, lod2: o2 as U8Array }, { lod1: b1 as U16Array, lod2: b2 as U16Array }, coverage)
   }
 
   get grid() {

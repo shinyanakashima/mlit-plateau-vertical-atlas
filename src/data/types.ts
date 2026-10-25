@@ -53,6 +53,8 @@ export interface Manifest {
   buildings: string
   models: Record<Lod, string>
   ortho: null | { file: string; rectangle: [number, number, number, number]; attribution: string }
+  /** absolute-height meshes for the LT11 mansion prototype */
+  mansion?: { models: Record<Lod, string>; terrain: string; terrain_info: { base_tp: number } }
 }
 
 export interface BuildingInfo {

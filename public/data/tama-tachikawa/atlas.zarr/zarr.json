@@ -1,0 +1,144 @@
+{
+  "attributes": {
+    "atlas_version": 1,
+    "area_id": "tama-tachikawa",
+    "title": "\u591a\u6469 \u7acb\u5ddd",
+    "subtitle": "\u7acb\u5ddd\u99c5\u5317\u53e3 512m\u56db\u65b9",
+    "crs": {
+      "horizontal": "EPSG:6677",
+      "name": "JGD2011 / Japan Plane Rectangular CS IX",
+      "vertical": "T.P. (\u6771\u4eac\u6e7e\u5e73\u5747\u6d77\u9762, JGD2011)",
+      "axis_order": "x=easting, y=northing"
+    },
+    "grid": {
+      "epsg": 6677,
+      "x0": -38268.0,
+      "y1": -33058.0,
+      "nx": 256,
+      "ny": 256,
+      "dx": 2.0,
+      "z0": 0.0,
+      "nz": 107,
+      "dz": 2.0,
+      "x1": -37756.0,
+      "y0": -33570.0,
+      "y_index_origin": "north",
+      "z_sample": "level centre z0 + (k + 0.5) * dz"
+    },
+    "corners_lonlat": {
+      "nw": [
+        139.410453043185,
+        35.70129009618563
+      ],
+      "ne": [
+        139.41611076065777,
+        35.70130984012082
+      ],
+      "se": [
+        139.41613480043068,
+        35.696694952716236
+      ],
+      "sw": [
+        139.41047740892404,
+        35.69667521211641
+      ]
+    },
+    "enu": {
+      "enu_to_grid": [
+        0.4999543252353371,
+        0.0021387509162082074,
+        128.27310690712835,
+        0.0021387509174426913,
+        -0.4999543253244003,
+        127.58839440764937
+      ],
+      "grid_to_enu": [
+        2.0001461123452033,
+        0.00855641028830423,
+        -257.6566547493112,
+        0.00855641028816017,
+        -2.0001461119939683,
+        254.0978736783785
+      ],
+      "max_residual_m": 6.14995627756798e-05,
+      "origin_lonlat": [
+        139.4133,
+        35.699
+      ],
+      "origin_height_ellipsoid": 0.0
+    },
+    "center_lonlat": [
+      139.4133,
+      35.699
+    ],
+    "display": {
+      "height_offset_m": -82.3370590209961,
+      "base_tp_m": 82.3370590209961,
+      "note": "Cesium ellipsoidal height = T.P. + height_offset_m (globe without terrain)"
+    },
+    "codes": {
+      "0": "free",
+      "1": "building",
+      "255": "not judged (below ground / no data)"
+    },
+    "lods": {
+      "lod1": "LOD1 prism: footprint \u00d7 [ground, measured top]",
+      "lod2": "LOD2 vertical ray casting of roof/ground/installation surfaces"
+    },
+    "ground": {
+      "source": "\u56fd\u571f\u5730\u7406\u9662 \u6a19\u9ad8\u30bf\u30a4\u30eb (DEM5A\u2192DEM5B\u2192DEM10B)",
+      "pixels": {
+        "dem5a_png": 65536,
+        "dem5b_png": 0,
+        "dem_png": 0,
+        "missing": 0
+      }
+    },
+    "sources": {
+      "buildings": "\u56fd\u571f\u4ea4\u901a\u7701 Project PLATEAU 3D\u90fd\u5e02\u30e2\u30c7\u30eb (CityGML, \u5efa\u7bc9\u7269)",
+      "files": [
+        {
+          "mesh": "53394332",
+          "city_code": "13202",
+          "city_name": "\u7acb\u5ddd\u5e02",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/18/c640e6-298a-459b-b5c9-a518afb8205d/13202_tachikawa-shi_pref_2025_citygml_1_op/udx/bldg/53394332_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/18/c640e6-298a-459b-b5c9-a518afb8205d/13202_tachikawa-shi_pref_2025_citygml_1_op.zip"
+        },
+        {
+          "mesh": "53394333",
+          "city_code": "13202",
+          "city_name": "\u7acb\u5ddd\u5e02",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/18/c640e6-298a-459b-b5c9-a518afb8205d/13202_tachikawa-shi_pref_2025_citygml_1_op/udx/bldg/53394333_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/18/c640e6-298a-459b-b5c9-a518afb8205d/13202_tachikawa-shi_pref_2025_citygml_1_op.zip"
+        },
+        {
+          "mesh": "53394342",
+          "city_code": "13202",
+          "city_name": "\u7acb\u5ddd\u5e02",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/18/c640e6-298a-459b-b5c9-a518afb8205d/13202_tachikawa-shi_pref_2025_citygml_1_op/udx/bldg/53394342_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/18/c640e6-298a-459b-b5c9-a518afb8205d/13202_tachikawa-shi_pref_2025_citygml_1_op.zip"
+        },
+        {
+          "mesh": "53394343",
+          "city_code": "13202",
+          "city_name": "\u7acb\u5ddd\u5e02",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/18/c640e6-298a-459b-b5c9-a518afb8205d/13202_tachikawa-shi_pref_2025_citygml_1_op/udx/bldg/53394343_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/18/c640e6-298a-459b-b5c9-a518afb8205d/13202_tachikawa-shi_pref_2025_citygml_1_op.zip"
+        }
+      ],
+      "license": "PLATEAU: CC BY 4.0 \u4e92\u63db\uff08PLATEAU\u5229\u7528\u898f\u7d04\uff09 / \u5730\u7406\u9662\u30bf\u30a4\u30eb: \u56fd\u571f\u5730\u7406\u9662\u30b3\u30f3\u30c6\u30f3\u30c4\u5229\u7528\u898f\u7d04"
+    },
+    "building_count": 388,
+    "generated_at": "2026-10-25T07:15:46+0000"
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}

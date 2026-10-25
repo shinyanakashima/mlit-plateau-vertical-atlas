@@ -1,0 +1,47 @@
+{
+ "id": "tama-tachikawa",
+ "title": "多摩 立川",
+ "subtitle": "立川駅北口 512m四方",
+ "kind": "plateau",
+ "zarr": "atlas.zarr",
+ "buildings": "buildings.json",
+ "models": {
+  "lod1": "lod1.glb",
+  "lod2": "lod2.glb"
+ },
+ "ortho": {
+  "file": "ortho.jpg",
+  "rectangle": [
+   139.405517578125,
+   35.69187929931616,
+   139.42062377929688,
+   35.70637740887175
+  ],
+  "zoom": 18,
+  "layer": "seamlessphoto",
+  "attribution": "地理院タイル（全国最新写真・シームレス）"
+ },
+ "glb": {
+  "lod1": {
+   "vertices": 20438,
+   "triangles": 12038
+  },
+  "lod2": {
+   "vertices": 36548,
+   "triangles": 22534
+  }
+ },
+ "mansion": {
+  "models": {
+   "lod1": "lod1_abs.glb",
+   "lod2": "lod2_abs.glb"
+  },
+  "terrain": "terrain.glb",
+  "terrain_info": {
+   "vertices": 18693,
+   "triangles": 33794,
+   "base_tp": 0.0,
+   "step_cells": 2
+  }
+ }
+}

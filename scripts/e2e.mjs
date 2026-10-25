@@ -47,7 +47,7 @@ const check = async (name, fn) => {
 const hud = () => page.locator('.elev-hud .v').innerText()
 
 console.log(`E2E: ${base}`)
-await page.goto(`${base}?demo`)
+await page.goto(`${base}?app=atlas&demo`)
 
 await check('atlas loads (HUD + all Zarr levels)', async () => {
   await page.locator('.elev-hud').waitFor({ timeout: 30000 })
@@ -105,7 +105,7 @@ await check('LT demo advances', async () => {
 })
 
 await check('synthetic dataset is labelled', async () => {
-  await page.goto(`${base}?demo&area=synthetic`)
+  await page.goto(`${base}?app=atlas&demo&area=synthetic`)
   await page.locator('.badge.warn').first().waitFor({ timeout: 30000 })
 })
 

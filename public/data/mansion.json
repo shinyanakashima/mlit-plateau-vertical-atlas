@@ -1,0 +1,9 @@
+{
+  "title": "東京は何階建て？",
+  "left": "minato-shibaura",
+  "right": "tama-tachikawa",
+  "leftLabel": "港区",
+  "rightLabel": "多摩",
+  "defaultFloor": 9,
+  "floorHeightM": 10
+}

@@ -1,5 +1,10 @@
 # PLATEAU Vertical Atlas（都市の垂直地図帳）
 
+> **このブランチ（`lt11-mansion`）について**
+> PLATEAU LT11 用の独立プロトタイプ **「東京は何階建て？」** です。トップページ（`/`）がこのプロトタイプで、
+> 共通基盤の PLATEAU Vertical Atlas は `?app=atlas` で表示できます。仕様・デモ手順・検証結果は [docs/LT11_MANSION.md](docs/LT11_MANSION.md)。
+
+
 **東京の空は、何メートルからつながるのか？** ― PLATEAU × Zarrで街を水平に輪切りにしてみた
 
 国土交通省 Project PLATEAU の3D都市モデル（CityGML）を 2m×2m×3m のボクセルに変換し、

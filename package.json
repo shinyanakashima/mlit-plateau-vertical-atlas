@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "lint": "tsc -b && oxlint src",
     "test": "vitest run",
-    "test:e2e": "node scripts/e2e.mjs",
+    "test:e2e": "node scripts/e2e.mjs && node scripts/e2e-mansion.mjs",
+    "test:e2e:mansion": "node scripts/e2e-mansion.mjs",
+    "data:mansion": "python3 pipeline/build_atlas.py minato-shibaura && python3 pipeline/build_atlas.py tama-tachikawa",
     "data:synthetic": "python3 pipeline/build_synthetic.py",
     "data:tokyo": "python3 pipeline/build_atlas.py tokyo-station",
     "data:shinjuku": "python3 pipeline/build_atlas.py nishi-shinjuku",
@@ -18,6 +20,7 @@
   },
   "dependencies": {
     "@fontsource/noto-sans-jp": "^5.3.1",
+    "@fontsource/noto-serif-jp": "^5.3.1",
     "cesium": "^1.146.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",

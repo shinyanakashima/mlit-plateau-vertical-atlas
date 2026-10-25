@@ -1,0 +1,144 @@
+{
+  "attributes": {
+    "atlas_version": 1,
+    "area_id": "minato-shibaura",
+    "title": "\u6e2f\u533a \u829d\u6d66",
+    "subtitle": "\u829d\u6d66\u30a2\u30a4\u30e9\u30f3\u30c9\u30fb\u7530\u753a\u99c5\u6771\u53e3 512m\u56db\u65b9",
+    "crs": {
+      "horizontal": "EPSG:6677",
+      "name": "JGD2011 / Japan Plane Rectangular CS IX",
+      "vertical": "T.P. (\u6771\u4eac\u6e7e\u5e73\u5747\u6d77\u9762, JGD2011)",
+      "axis_order": "x=easting, y=northing"
+    },
+    "grid": {
+      "epsg": 6677,
+      "x0": -7922.0,
+      "y1": -39482.0,
+      "nx": 256,
+      "ny": 256,
+      "dx": 2.0,
+      "z0": 0.0,
+      "nz": 88,
+      "dz": 2.0,
+      "x1": -7410.0,
+      "y0": -39994.0,
+      "y_index_origin": "north",
+      "z_sample": "level centre z0 + (k + 0.5) * dz"
+    },
+    "corners_lonlat": {
+      "nw": [
+        139.7458535076713,
+        35.644096960008895
+      ],
+      "ne": [
+        139.75150733605372,
+        35.644100933543406
+      ],
+      "se": [
+        139.75151204087953,
+        35.639485884209655
+      ],
+      "sw": [
+        139.74585853757955,
+        35.639481911346884
+      ]
+    },
+    "enu": {
+      "enu_to_grid": [
+        0.49995017699639316,
+        0.00043033108730774876,
+        128.77671434800084,
+        0.0004303310860334713,
+        -0.4999501770846633,
+        127.52672088904208
+      ],
+      "grid_to_enu": [
+        2.000197829954432,
+        0.0017216661708264226,
+        -257.7984630287642,
+        0.0017216661657623656,
+        -2.000197829601239,
+        254.85695982639402
+      ],
+      "max_residual_m": 1.2494614281877148e-05,
+      "origin_lonlat": [
+        139.7487,
+        35.6418
+      ],
+      "origin_height_ellipsoid": 0.0
+    },
+    "center_lonlat": [
+      139.7487,
+      35.6418
+    ],
+    "display": {
+      "height_offset_m": -2.033893346786499,
+      "base_tp_m": 2.033893346786499,
+      "note": "Cesium ellipsoidal height = T.P. + height_offset_m (globe without terrain)"
+    },
+    "codes": {
+      "0": "free",
+      "1": "building",
+      "255": "not judged (below ground / no data)"
+    },
+    "lods": {
+      "lod1": "LOD1 prism: footprint \u00d7 [ground, measured top]",
+      "lod2": "LOD2 vertical ray casting of roof/ground/installation surfaces"
+    },
+    "ground": {
+      "source": "\u56fd\u571f\u5730\u7406\u9662 \u6a19\u9ad8\u30bf\u30a4\u30eb (DEM5A\u2192DEM5B\u2192DEM10B)",
+      "pixels": {
+        "dem5a_png": 52232,
+        "dem5b_png": 0,
+        "dem_png": 13304,
+        "missing": 0
+      }
+    },
+    "sources": {
+      "buildings": "\u56fd\u571f\u4ea4\u901a\u7701 Project PLATEAU 3D\u90fd\u5e02\u30e2\u30c7\u30eb (CityGML, \u5efa\u7bc9\u7269)",
+      "files": [
+        {
+          "mesh": "53393569",
+          "city_code": "13103",
+          "city_name": "\u6e2f\u533a",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/ea/d75459-6d62-4a1f-8081-317603bd5f8d/13103_minato-ku_pref_2025_citygml_1_op/udx/bldg/53393569_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/ea/d75459-6d62-4a1f-8081-317603bd5f8d/13103_minato-ku_pref_2025_citygml_1_op.zip"
+        },
+        {
+          "mesh": "53393660",
+          "city_code": "13103",
+          "city_name": "\u6e2f\u533a",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/ea/d75459-6d62-4a1f-8081-317603bd5f8d/13103_minato-ku_pref_2025_citygml_1_op/udx/bldg/53393660_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/ea/d75459-6d62-4a1f-8081-317603bd5f8d/13103_minato-ku_pref_2025_citygml_1_op.zip"
+        },
+        {
+          "mesh": "53393579",
+          "city_code": "13103",
+          "city_name": "\u6e2f\u533a",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/ea/d75459-6d62-4a1f-8081-317603bd5f8d/13103_minato-ku_pref_2025_citygml_1_op/udx/bldg/53393579_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/ea/d75459-6d62-4a1f-8081-317603bd5f8d/13103_minato-ku_pref_2025_citygml_1_op.zip"
+        },
+        {
+          "mesh": "53393670",
+          "city_code": "13103",
+          "city_name": "\u6e2f\u533a",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/ea/d75459-6d62-4a1f-8081-317603bd5f8d/13103_minato-ku_pref_2025_citygml_1_op/udx/bldg/53393670_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/ea/d75459-6d62-4a1f-8081-317603bd5f8d/13103_minato-ku_pref_2025_citygml_1_op.zip"
+        }
+      ],
+      "license": "PLATEAU: CC BY 4.0 \u4e92\u63db\uff08PLATEAU\u5229\u7528\u898f\u7d04\uff09 / \u5730\u7406\u9662\u30bf\u30a4\u30eb: \u56fd\u571f\u5730\u7406\u9662\u30b3\u30f3\u30c6\u30f3\u30c4\u5229\u7528\u898f\u7d04"
+    },
+    "building_count": 269,
+    "generated_at": "2026-10-25T07:13:48+0000"
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}
