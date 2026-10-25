@@ -331,12 +331,13 @@ export class AtlasScene {
     const c = this.gridCornerEnu()
     const lines = new PolylineCollection({ modelMatrix: this.enuFrame })
     const top = a.displayHeight(a.levelCenter(a.grid.nz - 1) + a.grid.dz / 2)
-    const mat = Material.fromType('Color', { color: Color.fromCssColorString('#9fb4d8').withAlpha(0.35) })
+    // one Material per polyline: Cesium destroys a polyline's material together with it
+    const mat = () => Material.fromType('Color', { color: Color.fromCssColorString('#9fb4d8').withAlpha(0.35) })
     const ring = [c.nw, c.ne, c.se, c.sw, c.nw]
-    lines.add({ positions: ring.map(([e, n]) => new Cartesian3(e, n, 0.3)), width: 1.5, material: mat })
-    lines.add({ positions: ring.map(([e, n]) => new Cartesian3(e, n, top)), width: 1, material: mat })
+    lines.add({ positions: ring.map(([e, n]) => new Cartesian3(e, n, 0.3)), width: 1.5, material: mat() })
+    lines.add({ positions: ring.map(([e, n]) => new Cartesian3(e, n, top)), width: 1, material: mat() })
     for (const [e, n] of ring.slice(0, 4)) {
-      lines.add({ positions: [new Cartesian3(e, n, 0.3), new Cartesian3(e, n, top)], width: 1, material: mat })
+      lines.add({ positions: [new Cartesian3(e, n, 0.3), new Cartesian3(e, n, top)], width: 1, material: mat() })
     }
     this.staticLines = this.viewer.scene.primitives.add(lines)
   }
