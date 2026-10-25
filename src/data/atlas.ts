@@ -68,7 +68,7 @@ export class Atlas {
     const groundChunk = await zarr.get(g, null)
     // optional layer (added for the LT11 mansion areas)
     let coverage: Uint8Array | null = null
-    try {
+    if (manifest.mansion) try {
       const c = await zarr.open.v3(root.resolve('coverage'), { kind: 'array' })
       if (c.is('uint8')) coverage = (await zarr.get(c, null)).data as Uint8Array
     } catch {

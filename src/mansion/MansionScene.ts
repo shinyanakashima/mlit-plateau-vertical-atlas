@@ -306,6 +306,7 @@ export class MansionScene {
   }
 
   private updateLabels() {
+    const small = this.viewer.canvas.clientWidth < 600
     for (const s of this.slots) {
       s.label.removeAll()
       const a = s.atlas
@@ -315,7 +316,7 @@ export class MansionScene {
       // name plates in front of each block, on the showroom floor
       s.label.add({
         position: new Cartesian3(0, -half - 30, 0),
-        text: g, font: '700 22px "Noto Sans JP", sans-serif', fillColor: Color.WHITE,
+        text: g, font: `700 ${small ? 14 : 22}px "Noto Sans JP", sans-serif`, fillColor: Color.WHITE,
         outlineColor: Color.fromCssColorString('#0b0f18'), outlineWidth: 4, style: LabelStyle.FILL_AND_OUTLINE,
         horizontalOrigin: HorizontalOrigin.CENTER, verticalOrigin: VerticalOrigin.TOP,
         pixelOffset: new Cartesian2(0, 6),
@@ -324,10 +325,10 @@ export class MansionScene {
       s.label.add({
         position: new Cartesian3(0, -half - 30, 0),
         text: `地面 海抜 約${Math.round(ground)}m（${floorLabel(Math.floor(ground / FLOOR_M) + 1)}）`,
-        font: '500 14px "Noto Sans JP", sans-serif', fillColor: Color.fromCssColorString('#d7b48a'),
+        font: `500 ${small ? 10 : 14}px "Noto Sans JP", sans-serif`, fillColor: Color.fromCssColorString('#d7b48a'),
         outlineColor: Color.fromCssColorString('#0b0f18'), outlineWidth: 3, style: LabelStyle.FILL_AND_OUTLINE,
         horizontalOrigin: HorizontalOrigin.CENTER, verticalOrigin: VerticalOrigin.TOP,
-        pixelOffset: new Cartesian2(0, 36),
+        pixelOffset: new Cartesian2(0, small ? 24 : 36),
         disableDepthTestDistance: Number.POSITIVE_INFINITY,
       })
     }

@@ -287,7 +287,7 @@ export default function MansionApp() {
             <button className={lod === 'lod1' ? 'on' : ''} onClick={() => setLod('lod1')}>LOD1</button>
             <button className={lod === 'lod2' ? 'on' : ''} onClick={() => setLod('lod2')}>LOD2</button>
           </div>
-          <button className={`btn ${demo != null ? 'active' : ''}`} onClick={() => (demo == null ? applyDemo(0) : setDemo(null))}>{demo != null ? 'デモ終了' : '▶ LTデモ'}</button>
+          <button className={`btn mn-demo-btn ${demo != null ? 'active' : ''}`} onClick={() => (demo == null ? applyDemo(0) : setDemo(null))}>{demo != null ? 'デモ終了' : '▶ LTデモ'}</button>
           <button className="btn" onClick={() => sceneRef.current?.flyHome()}>視点を戻す</button>
           <button className="btn" onClick={() => setAbout(true)}>物件概要・出典</button>
         </div>

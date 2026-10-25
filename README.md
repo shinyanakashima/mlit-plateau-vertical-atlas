@@ -3,6 +3,7 @@
 > **このブランチ（`lt11-mansion`）について**
 > PLATEAU LT11 用の独立プロトタイプ **「東京は何階建て？」** です。トップページ（`/`）がこのプロトタイプで、
 > 共通基盤の PLATEAU Vertical Atlas は `?app=atlas` で表示できます。仕様・デモ手順・検証結果は [docs/LT11_MANSION.md](docs/LT11_MANSION.md)。
+> 公開URL：https://shinyanakashima.github.io/mlit-plateau-vertical-atlas/lt11/
 
 
 **東京の空は、何メートルからつながるのか？** ― PLATEAU × Zarrで街を水平に輪切りにしてみた

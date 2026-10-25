@@ -40,7 +40,15 @@ export function FloorGuide({ floor, maxFloor, onFloor, riding, onRide, table, la
 }) {
   const listRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    listRef.current?.querySelector('.mn-row.on')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+    // scroll only the directory list (scrollIntoView would also scroll the page on phones)
+    const list = listRef.current
+    const row = list?.querySelector<HTMLElement>('.mn-row.on')
+    if (list && row) {
+      const top = row.offsetTop - list.offsetTop
+      if (top < list.scrollTop || top + row.offsetHeight > list.scrollTop + list.clientHeight) {
+        list.scrollTo({ top: top - list.clientHeight / 2 + row.offsetHeight / 2, behavior: 'smooth' })
+      }
+    }
   }, [floor])
   const floors = Array.from({ length: maxFloor }, (_, i) => maxFloor - i)
   const [lo, hi] = floorRange(floor)

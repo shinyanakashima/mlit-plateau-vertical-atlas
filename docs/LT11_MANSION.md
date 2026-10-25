@@ -110,8 +110,10 @@ npm run dev                  # http://localhost:5173/ がこのプロトタイ�
 - 3Dの断面は、地盤の中にある場合は土のブロックに隠れて見えません（フロアマップで確認）
 - ヘッドレス環境（SwiftShader）で確認しています。会場の機材での描画の滑らかさは要確認
 
-## 公開について
+## 公開
 
-このブランチは公開していません（外部公開には許可が必要なため）。公開する場合の候補：
-- Cloudflare Pages：Git連携で Production branch を `lt11-mansion` にした別プロジェクトを作成（ビルド `npm run build`、出力 `dist`）
-- GitHub Pages：現在は `main` を公開中。`lt11-mansion` を同じサイトのサブパスで出すにはワークフローの変更が必要
+GitHub Pages で公開しています：https://shinyanakashima.github.io/mlit-plateau-vertical-atlas/lt11/ （LTデモは `?tour`）
+
+- 1つのサイトに `main`（トップ）と `lt11-mansion`（`/lt11/`）を同居させています。どちらのブランチへのpushでも、`.github/workflows/deploy-pages.yml` が両方をビルドして公開します（同じワークフローを両ブランチに置いています）
+- スマホでは、3Dを上部に固定し、エレベーター → フロア案内 → フロアマップの順に縦に並べます
+- Cloudflare Pagesに出す場合は、Production branch を `lt11-mansion` にした別プロジェクトを作成します（ビルド `npm run build`、出力 `dist`）
