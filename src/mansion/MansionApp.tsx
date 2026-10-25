@@ -4,27 +4,30 @@ import { Atlas, dataBaseUrl } from '../data/atlas'
 import type { Lod } from '../data/types'
 import { describeFloor, type FloorStory } from './describe'
 import {
-  classifySection, floorLabel, floorRange, levelIndex, representativeElevation, sectionStats, type SectionStats,
+  classifySection, floorLabel, floorOf, floorRange, levelIndex, representativeElevation, sectionStats, type SectionStats,
 } from './floors'
 import { MansionScene, medianGround } from './MansionScene'
 import { renderSection } from './sectionTexture'
 import { AboutDialog, DemoPanel, FloorGuide, FloorPlan, type CellInfo } from './parts'
 import { MANSION_STEPS } from './demo'
 import { elevatorSound, floorAnnouncement, type SoundMode } from './sound'
+import { easeElevator, loadSpeed, saveSpeed, travelMs, type ElevatorSpeed } from './speed'
 import './mansion.css'
+
+export interface MansionAreaEntry { id: string; label: string; name: string }
 
 interface MansionConfig {
   title: string
-  left: string
-  right: string
-  leftLabel: string
-  rightLabel: string
   defaultFloor: number
+  default: { left: string; right: string }
+  areas: MansionAreaEntry[]
 }
 
 export interface AreaState {
   atlas: Atlas
   label: string
+  /** short place name (芝浦, 立川 …) */
+  name: string
   volume: Uint8Array | null
   loaded: number
 }
@@ -32,10 +35,14 @@ export interface AreaState {
 /** per area, per floor: stats of the representative section */
 export type FloorTable = (SectionStats | null)[][]
 
-const RIDE_STEP_MS = 1500
+/** pause at each floor while riding automatically (doors open) */
+const RIDE_DWELL_MS = 900
 
 export default function MansionApp() {
   const [config, setConfig] = useState<MansionConfig | null>(null)
+  const [pick, setPick] = useState<{ left: string; right: string } | null>(null)
+  const [speed, setSpeed] = useState<ElevatorSpeed>(loadSpeed)
+  const [passing, setPassing] = useState<number | null>(null)
   const [areas, setAreas] = useState<AreaState[]>([])
   const [error, setError] = useState<string | null>(null)
   const [floor, setFloor] = useState(9)
@@ -66,29 +73,64 @@ export default function MansionApp() {
   }, [])
   const query = useMemo(() => new URLSearchParams(location.search), [])
 
-  // ---- load config and both areas -------------------------------------------------------------
+  // ---- load config, then the two selected areas ------------------------------------------------
   useEffect(() => {
     let alive = true
     fetch(`${dataBaseUrl()}mansion.json`)
       .then((r) => { if (!r.ok) throw new Error(`mansion.json ${r.status}`); return r.json() as Promise<MansionConfig> })
-      .then(async (c) => {
+      .then((c) => {
         if (!alive) return
         setConfig(c)
         const f = Number(query.get('floor')) || c.defaultFloor
         setFloor(f)
         elevRef.current = representativeElevation(f)
-        const [a, b] = await Promise.all([Atlas.open(c.left), Atlas.open(c.right)])
-        if (!alive) return
-        setAreas([{ atlas: a, label: c.leftLabel, volume: null, loaded: 0 }, { atlas: b, label: c.rightLabel, volume: null, loaded: 0 }])
+        const known = (id: string | null) => (id && c.areas.some((x) => x.id === id) ? id : null)
+        setPick({ left: known(query.get('left')) ?? c.default.left, right: known(query.get('right')) ?? c.default.right })
       })
       .catch((e) => alive && setError(String(e)))
     return () => { alive = false }
   }, [query])
 
-  // stream both volumes (Zarr chunks) for the floor guide
+  const areaKey = pick ? `${pick.left}|${pick.right}` : ''
   useEffect(() => {
-    if (areas.length !== 2 || areas.some((a) => a.volume)) return
+    if (!pick || !config) return
     let alive = true
+    setAreas([])
+    setLevels([null, null])
+    setBids([null, null])
+    setCell(null)
+    const entry = (id: string) => config.areas.find((x) => x.id === id)!
+    Promise.all([Atlas.open(pick.left), Atlas.open(pick.right)])
+      .then(([a, b]) => {
+        if (!alive) return
+        setAreas([
+          { atlas: a, label: entry(pick.left).label, name: entry(pick.left).name, volume: null, loaded: 0 },
+          { atlas: b, label: entry(pick.right).label, name: entry(pick.right).name, volume: null, loaded: 0 },
+        ])
+      })
+      .catch((e) => alive && setError(String(e)))
+    return () => { alive = false }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areaKey, config])
+
+  const choose = useCallback((side: 'left' | 'right', id: string) => {
+    setPick((p) => {
+      if (!p) return p
+      const next = { ...p, [side]: id }
+      const q = new URLSearchParams(location.search)
+      q.set('left', next.left)
+      q.set('right', next.right)
+      history.replaceState(null, '', `?${q}`)
+      return next
+    })
+  }, [])
+
+  // stream both volumes (Zarr chunks) for the floor guide; reloaded when the areas or the LOD change
+  const volumeKey = `${areas.map((a) => a.atlas.attrs.area_id).join('|')}|${lod}`
+  useEffect(() => {
+    if (areas.length !== 2) return
+    let alive = true
+    setAreas((s) => s.map((x) => ({ ...x, volume: null, loaded: 0 })))
     areas.forEach((a, i) => {
       const k = levelIndex(representativeElevation(floor), a.atlas.grid.z0, a.atlas.grid.dz, a.atlas.grid.nz) ?? 0
       a.atlas.volume(lod, k, (d) => alive && setAreas((s) => s.map((x, j) => (j === i ? { ...x, loaded: d } : x))))
@@ -97,7 +139,7 @@ export default function MansionApp() {
     })
     return () => { alive = false }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areas.length, lod])
+  }, [volumeKey])
 
   // ---- 3D scene ---------------------------------------------------------------------------------
   useEffect(() => {
@@ -108,32 +150,37 @@ export default function MansionApp() {
     return () => { s.destroy(); sceneRef.current = null }
   }, [])
 
+  const sceneKey = areas.map((a) => a.atlas.attrs.area_id).join('|')
   useEffect(() => {
     const s = sceneRef.current
     if (!s || areas.length !== 2) return
     s.setAreas(areas.map((a) => a.atlas), lod).then(() => s.flyHome()).catch((err) => console.error('setAreas failed', err?.message, err?.stack))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areas.length])
+  }, [sceneKey])
 
   useEffect(() => { void sceneRef.current?.setLod(lod) }, [lod])
 
-  // smooth elevator: tween the section planes to the representative elevation of the floor
+  // elevator: move the section planes at the selected speed (with acceleration / deceleration)
   useEffect(() => {
     const target = representativeElevation(floor)
     const from = elevRef.current
-    const t0 = performance.now()
-    const dur = Math.min(900, 250 + Math.abs(target - from) * 12)
-    // sounds only for a real floor change (not the initial placement or a data reload)
+    const dist = Math.abs(target - from)
+    const dur = travelMs(dist, speed)
     const prev = prevFloor.current
     const moved = prev != null && prev !== floor && areas.length === 2
     prevFloor.current = floor
     if (moved) elevatorSound.hum(dur / 1000)
+    const t0 = performance.now()
     let raf = 0
+    let shown: number | null = null
     const tick = (t: number) => {
-      const p = Math.min(1, (t - t0) / dur)
-      const e = from + (target - from) * (p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2)
+      const p = dur > 0 ? Math.min(1, (t - t0) / dur) : 1
+      const e = from + (target - from) * easeElevator(p)
       elevRef.current = e
-      try { sceneRef.current?.setFloor(floor, e) } catch (err) { console.error('setFloor failed', (err as Error).message, (err as Error).stack) }
+      try { sceneRef.current?.setFloor(floor, e) } catch (err) { console.error('setFloor failed', (err as Error).message) }
+      // the display counts the floors the cabin passes
+      const f = p < 1 ? floorOf(e) : null
+      if (f !== shown) { shown = f; setPassing(f) }
       if (p < 1) raf = requestAnimationFrame(tick)
       else {
         setArrived((n) => n + 1)
@@ -145,7 +192,8 @@ export default function MansionApp() {
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [floor, areas.length])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [floor, sceneKey])
 
   // ---- sections of the current floor ------------------------------------------------------------
   const elevation = representativeElevation(floor)
@@ -226,9 +274,9 @@ export default function MansionApp() {
         if (f <= 1) dir.current = 1
         return f + dir.current
       })
-    }, RIDE_STEP_MS)
+    }, RIDE_DWELL_MS)
     return () => clearTimeout(t)
-  }, [riding, floor, maxFloor])
+  }, [riding, arrived, maxFloor])
 
   // ---- demo -------------------------------------------------------------------------------------
   const applyDemo = useCallback((i: number) => {
@@ -238,8 +286,12 @@ export default function MansionApp() {
     setRiding(!!s.ride)
     if (s.lod) setLod(s.lod)
     if (s.home) sceneRef.current?.flyHome()
+    // the walkthrough text is written for the default pair
+    if (i <= 0 && config && pick && (pick.left !== config.default.left || pick.right !== config.default.right)) {
+      setPick({ ...config.default })
+    }
     setCell(null)
-  }, [go])
+  }, [go, config, pick])
   const tourStarted = useRef(false)
   useEffect(() => {
     if (query.has('tour') && areas.length === 2 && !tourStarted.current) { tourStarted.current = true; applyDemo(0) }
@@ -287,13 +339,15 @@ export default function MansionApp() {
   const headline = useMemo(() => {
     if (!stories[0] || !stories[1] || areas.length !== 2) return null
     const groundFloor = areas.map((a) => Math.floor(medianGround(a.atlas) / 10) + 1)
+    const same = areas[0].label === areas[1].label
+    const who = (i: number) => (same ? areas[i].name : areas[i].label)
     const say = (i: number) => {
       const st = stories[i]!
-      if (st.kind === 'ground') return `${areas[i].label}はまだ地面の中`
-      if (groundFloor[i] === floor) return `${areas[i].label}はこの階に地面（玄関の階）`
-      if (st.kind === 'building') return `${areas[i].label}は${st.headline}`
-      if (st.kind === 'sky') return `${areas[i].label}はほぼ空室`
-      return `${areas[i].label}は${st.headline}`
+      if (st.kind === 'ground') return `${who(i)}はまだ地面の中`
+      if (groundFloor[i] === floor) return `${who(i)}はこの階に地面（玄関の階）`
+      if (st.kind === 'building') return `${who(i)}は${st.headline}`
+      if (st.kind === 'sky') return `${who(i)}はほぼ空室`
+      return `${who(i)}は${st.headline}`
     }
     return `${say(0)}、${say(1)}。`
   }, [stories, areas, floor])
@@ -308,6 +362,16 @@ export default function MansionApp() {
         <div className="mn-rule">
           <b>本物件の階数ルール</b>
           <span>海抜10mごとに1フロア（1F＝海抜0〜10m）。実在の建物の階数ではありません。</span>
+        </div>
+        <div className="mn-pick">
+          {pick && config && (['left', 'right'] as const).map((side) => (
+            <label key={side}>
+              <span>{side === 'left' ? '左の物件' : '右の物件'}</span>
+              <select className="select" value={pick[side]} onChange={(e) => choose(side, e.target.value)} aria-label={side === 'left' ? '左の物件' : '右の物件'}>
+                {config.areas.map((a) => <option key={a.id} value={a.id}>{a.label} {a.name}</option>)}
+              </select>
+            </label>
+          ))}
         </div>
         <div className="mn-actions">
           <div className="seg" role="radiogroup" aria-label="建物形状">
@@ -335,7 +399,8 @@ export default function MansionApp() {
 
       <FloorGuide
         floor={floor} maxFloor={maxFloor} onFloor={(f) => { elevatorSound.click(); setRiding(false); go(f) }}
-        riding={riding} onRide={() => { elevatorSound.click(); setRiding((r) => !r) }} table={table} labels={areas.map((a) => a.label)}
+        riding={riding} onRide={() => { elevatorSound.click(); setRiding((r) => !r) }}
+        speed={speed} onSpeed={(v) => { elevatorSound.click(); setSpeed(v); saveSpeed(v) }} passing={passing} table={table} labels={areas.map((a) => a.name)}
         progress={areas.map((a) => [a.loaded, a.atlas.grid.nz])} arrived={arrived}
       />
 

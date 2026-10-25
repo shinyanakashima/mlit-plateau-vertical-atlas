@@ -6,6 +6,7 @@ import {
 } from './floors'
 import { MANSION_STEPS } from './demo'
 import { SECTION_COLORS } from './sectionTexture'
+import { SPEEDS, type ElevatorSpeed } from './speed'
 
 const pct = (v: number | null | undefined, d = 1) => (v == null ? '—' : `${v.toFixed(d)}%`)
 
@@ -34,9 +35,10 @@ function MiniBar({ s }: { s: SectionStats | null }) {
 }
 
 /** Elevator panel + building directory: one row per virtual floor, both areas side by side. */
-export function FloorGuide({ floor, maxFloor, onFloor, riding, onRide, table, labels, progress, arrived }: {
+export function FloorGuide({ floor, maxFloor, onFloor, riding, onRide, table, labels, progress, arrived, speed, onSpeed, passing }: {
   floor: number; maxFloor: number; onFloor: (f: number) => void; riding: boolean; onRide: () => void
   table: FloorTable | null; labels: string[]; progress: [number, number][]; arrived: number
+  speed: ElevatorSpeed; onSpeed: (s: ElevatorSpeed) => void; passing: number | null
 }) {
   const listRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -51,19 +53,30 @@ export function FloorGuide({ floor, maxFloor, onFloor, riding, onRide, table, la
     }
   }, [floor])
   const floors = Array.from({ length: maxFloor }, (_, i) => maxFloor - i)
-  const [lo, hi] = floorRange(floor)
+  const moving = passing != null && passing !== floor
+  const shown = moving ? passing! : floor
+  const [lo, hi] = floorRange(shown)
+  const up = moving ? floor > passing! : true
   return (
     <aside className="mn-guide">
       <div className="mn-elevator">
         <div className="mn-elev-display">
-          <span className={`mn-arrow ${riding ? 'run' : ''}`}>▲</span>
-          <span key={arrived} className="mn-elev-floor num ding">{floorLabel(floor)}</span>
+          <span className={`mn-arrow ${moving || riding ? 'run' : ''}`}>{up ? '▲' : '▼'}</span>
+          <span key={moving ? 'm' : arrived} className={`mn-elev-floor num ${moving ? '' : 'ding'}`}>{floorLabel(shown)}</span>
           <span className="mn-elev-band num">{lo}–{hi} m</span>
         </div>
         <div className="mn-elev-buttons">
           <button className="mn-ebtn" onClick={() => onFloor(floor - 1)} disabled={floor <= 1} aria-label="1つ下の階へ">▼</button>
           <button className={`mn-ebtn wide ${riding ? 'on' : ''}`} onClick={onRide}>{riding ? '■ 停止' : '▶ 自動運転'}</button>
           <button className="mn-ebtn" onClick={() => onFloor(floor + 1)} disabled={floor >= maxFloor} aria-label="1つ上の階へ">▲</button>
+        </div>
+        <div className="mn-speed">
+          <div className="seg full" role="radiogroup" aria-label="エレベーターの速さ">
+            {(Object.keys(SPEEDS) as ElevatorSpeed[]).map((k) => (
+              <button key={k} className={speed === k ? 'on' : ''} onClick={() => onSpeed(k)} title={SPEEDS[k].note}>{SPEEDS[k].label}</button>
+            ))}
+          </div>
+          <div className="mn-speed-note">{SPEEDS[speed].note}</div>
         </div>
       </div>
       <div className="mn-dir-head">
@@ -266,7 +279,7 @@ export function AboutDialog({ areas, onClose }: { areas: AreaState[]; onClose: (
         <ul>
           <li>3Dの「モデルルーム」は2つの範囲を比較のため横に並べた展示です。実際の位置関係ではありません（高さは共通の絶対標高）</li>
           <li>建物は2mセルの中心で判定。階数の推定は「計測高さ÷地上階数」によるもので、実際のフロアとは異なる場合があります</li>
-          <li>PLATEAU上の名称・属性はそのまま表示しています（例：「立川北駅」のオブジェクトは計測高さ約128mの塔状部分を含み、LOD1とLOD2の上端が大きく異なります）</li>
+          <li>PLATEAU上の名称・属性はそのまま表示しています（例：「立川北駅」のオブジェクトは計測高さ約128mの塔状部分を含み、LOD1とLOD2の上端が大きく異なります。フロアの一言説明には、地上階数が登録された建物だけを使います）</li>
           <li>建築物以外（高架・橋梁・樹木など）は含みません。水面は標高データの値をそのまま地面として扱います</li>
         </ul>
         <div style={{ textAlign: 'right', marginTop: 14 }}><button className="btn" onClick={onClose}>閉じる</button></div>

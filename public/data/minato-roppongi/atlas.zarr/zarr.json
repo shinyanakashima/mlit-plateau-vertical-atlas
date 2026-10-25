@@ -1,0 +1,126 @@
+{
+  "attributes": {
+    "atlas_version": 1,
+    "area_id": "minato-roppongi",
+    "title": "\u6e2f\u533a \u516d\u672c\u6728",
+    "subtitle": "\u516d\u672c\u6728\u30d2\u30eb\u30ba\u5468\u8fba 512m\u56db\u65b9",
+    "crs": {
+      "horizontal": "EPSG:6677",
+      "name": "JGD2011 / Japan Plane Rectangular CS IX",
+      "vertical": "T.P. (\u6771\u4eac\u6e7e\u5e73\u5747\u6d77\u9762, JGD2011)",
+      "axis_order": "x=easting, y=northing"
+    },
+    "grid": {
+      "epsg": 6677,
+      "x0": -9612.0,
+      "y1": -37406.0,
+      "nx": 256,
+      "ny": 256,
+      "dx": 2.0,
+      "z0": 0.0,
+      "nz": 139,
+      "dz": 2.0,
+      "x1": -9100.0,
+      "y0": -37918.0,
+      "y_index_origin": "north",
+      "z_sample": "level centre z0 + (k + 0.5) * dz"
+    },
+    "corners_lonlat": {
+      "nw": [
+        139.72716670576912,
+        35.66279449406249
+      ],
+      "ne": [
+        139.7328218489578,
+        35.66279934689974
+      ],
+      "se": [
+        139.73282763213697,
+        35.65818431432595
+      ],
+      "sw": [
+        139.72717281432966,
+        35.65817946230891
+      ]
+    },
+    "enu": {
+      "enu_to_grid": [
+        0.49995026304584744,
+        0.0005256534682030577,
+        128.12509438594918,
+        0.0005256534696643936,
+        -0.4999502631340982,
+        127.4142498189723
+      ],
+      "grid_to_enu": [
+        2.0001967564587795,
+        0.002103029921407907,
+        -256.54335419153364,
+        0.0021030299263385677,
+        -2.0001967561065843,
+        254.5841182618536
+      ],
+      "max_residual_m": 1.5223362595406797e-05,
+      "origin_lonlat": [
+        139.73,
+        35.6605
+      ],
+      "origin_height_ellipsoid": 0.0
+    },
+    "center_lonlat": [
+      139.73,
+      35.6605
+    ],
+    "display": {
+      "height_offset_m": -14.786541938781738,
+      "base_tp_m": 14.786541938781738,
+      "note": "Cesium ellipsoidal height = T.P. + height_offset_m (globe without terrain)"
+    },
+    "codes": {
+      "0": "free",
+      "1": "building",
+      "255": "not judged (below ground / no data)"
+    },
+    "lods": {
+      "lod1": "LOD1 prism: footprint \u00d7 [ground, measured top]",
+      "lod2": "LOD2 vertical ray casting of roof/ground/installation surfaces"
+    },
+    "ground": {
+      "source": "\u56fd\u571f\u5730\u7406\u9662 \u6a19\u9ad8\u30bf\u30a4\u30eb (DEM5A\u2192DEM5B\u2192DEM10B)",
+      "pixels": {
+        "dem5a_png": 65344,
+        "dem5b_png": 0,
+        "dem_png": 192,
+        "missing": 0
+      }
+    },
+    "sources": {
+      "buildings": "\u56fd\u571f\u4ea4\u901a\u7701 Project PLATEAU 3D\u90fd\u5e02\u30e2\u30c7\u30eb (CityGML, \u5efa\u7bc9\u7269)",
+      "files": [
+        {
+          "mesh": "53393588",
+          "city_code": "13103",
+          "city_name": "\u6e2f\u533a",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/ea/d75459-6d62-4a1f-8081-317603bd5f8d/13103_minato-ku_pref_2025_citygml_1_op/udx/bldg/53393588_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/ea/d75459-6d62-4a1f-8081-317603bd5f8d/13103_minato-ku_pref_2025_citygml_1_op.zip"
+        },
+        {
+          "mesh": "53393598",
+          "city_code": "13103",
+          "city_name": "\u6e2f\u533a",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/ea/d75459-6d62-4a1f-8081-317603bd5f8d/13103_minato-ku_pref_2025_citygml_1_op/udx/bldg/53393598_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/ea/d75459-6d62-4a1f-8081-317603bd5f8d/13103_minato-ku_pref_2025_citygml_1_op.zip"
+        }
+      ],
+      "license": "PLATEAU: CC BY 4.0 \u4e92\u63db\uff08PLATEAU\u5229\u7528\u898f\u7d04\uff09 / \u5730\u7406\u9662\u30bf\u30a4\u30eb: \u56fd\u571f\u5730\u7406\u9662\u30b3\u30f3\u30c6\u30f3\u30c4\u5229\u7528\u898f\u7d04"
+    },
+    "building_count": 360,
+    "generated_at": "2026-10-25T12:30:58+0000"
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}

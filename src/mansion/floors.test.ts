@@ -49,3 +49,26 @@ describe('section classification', () => {
     expect(sectionStats(new Uint8Array([3, 3])).vacancy).toBeNull()
   })
 })
+
+import { easeElevator, travelMs } from './speed'
+
+describe('elevator speed', () => {
+  it('one floor (10 m) at 6 m/s with 2 m/s² is a triangular profile of ~4.5 s', () => {
+    expect(travelMs(10, 'tower')).toBeCloseTo(2 * Math.sqrt(5) * 1000, 0)
+  })
+  it('long trips cruise at the rated speed', () => {
+    // 100 m at 6 m/s: 100/6 + 6/2 s
+    expect(travelMs(100, 'tower')).toBeCloseTo((100 / 6 + 3) * 1000, 0)
+    expect(travelMs(100, 'fast')).toBeLessThan(travelMs(100, 'tower'))
+    expect(travelMs(10, 'slow')).toBeCloseTo((10 / 1.5 + 0.75) * 1000, 0)
+  })
+  it('instant mode stays under a second', () => {
+    expect(travelMs(200, 'instant')).toBeLessThanOrEqual(900)
+    expect(travelMs(0, 'tower')).toBe(0)
+  })
+  it('easing starts and ends at rest', () => {
+    expect(easeElevator(0)).toBe(0)
+    expect(easeElevator(1)).toBe(1)
+    expect(easeElevator(0.5)).toBeCloseTo(0.5)
+  })
+})

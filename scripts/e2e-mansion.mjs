@@ -44,6 +44,19 @@ await check('8F: Tama is underground (vacancy 0%), Minato mostly vacant', async 
   if (!(r === 0 && l > 80)) throw new Error(`unexpected vacancy L=${l} R=${r}`)
   await page.locator('.mn-story.ground').waitFor({ timeout: 5000 })
 })
+await check('elevator speed: 超高層 takes seconds per floor, 一瞬 is quick', async () => {
+  await page.click('.mn-speed button:has-text("超高層")')
+  const t0 = Date.now()
+  await page.click('button[aria-label="1つ上の階へ"]')
+  await page.locator('.mn-elev-floor.ding:has-text("9F")').waitFor({ timeout: 15000 })
+  const slow = Date.now() - t0
+  await page.click('.mn-speed button:has-text("一瞬")')
+  const t1 = Date.now()
+  await page.click('button[aria-label="1つ下の階へ"]')
+  await page.locator('.mn-elev-floor.ding:has-text("8F")').waitFor({ timeout: 5000 })
+  const fast = Date.now() - t1
+  if (!(slow > 3000 && fast < slow / 2)) throw new Error(`travel times slow=${slow}ms fast=${fast}ms`)
+})
 await check('elevator ▲ goes to 9F and the ground floor of Tama appears', async () => {
   await page.click('button[aria-label="1つ上の階へ"]')
   await page.locator('.mn-elev-floor:has-text("9F")').waitFor({ timeout: 5000 })
@@ -77,6 +90,14 @@ await check('definitions dialog states it is not a real vacancy rate', async () 
   await page.click('button:has-text("物件概要")')
   await page.locator('.mn-about:has-text("実際の住宅の空室率ではありません")').waitFor({ timeout: 5000 })
   await page.keyboard.press('Escape')
+})
+await check('areas can be switched (六本木 × 八王子) and the URL follows', async () => {
+  await page.selectOption('select[aria-label="左の物件"]', 'minato-roppongi')
+  await page.selectOption('select[aria-label="右の物件"]', 'tama-hachioji')
+  await page.locator('.mn-plan-area:has-text("六本木")').waitFor({ timeout: 30000 })
+  await page.locator('.mn-plan-area:has-text("八王子")').waitFor({ timeout: 30000 })
+  if (!/left=minato-roppongi/.test(page.url()) || !/right=tama-hachioji/.test(page.url())) throw new Error(page.url())
+  await page.locator('.mn-dir-loading').waitFor({ state: 'detached', timeout: 45000 })
 })
 await check('Vertical Atlas is still available (?app=atlas)', async () => {
   await page.goto(`${base}?app=atlas&demo`)

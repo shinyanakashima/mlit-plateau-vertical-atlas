@@ -1,0 +1,126 @@
+{
+  "attributes": {
+    "atlas_version": 1,
+    "area_id": "tama-hachioji",
+    "title": "\u591a\u6469 \u516b\u738b\u5b50",
+    "subtitle": "\u516b\u738b\u5b50\u99c5\u5468\u8fba 512m\u56db\u65b9",
+    "crs": {
+      "horizontal": "EPSG:6677",
+      "name": "JGD2011 / Japan Plane Rectangular CS IX",
+      "vertical": "T.P. (\u6771\u4eac\u6e7e\u5e73\u5747\u6d77\u9762, JGD2011)",
+      "axis_order": "x=easting, y=northing"
+    },
+    "grid": {
+      "epsg": 6677,
+      "x0": -45016.0,
+      "y1": -37798.0,
+      "nx": 256,
+      "ny": 256,
+      "dx": 2.0,
+      "z0": 0.0,
+      "nz": 136,
+      "dz": 2.0,
+      "x1": -44504.0,
+      "y0": -38310.0,
+      "y_index_origin": "north",
+      "z_sample": "level centre z0 + (k + 0.5) * dz"
+    },
+    "corners_lonlat": {
+      "nw": [
+        139.3361517368652,
+        35.65828160780499
+      ],
+      "ne": [
+        139.34180636064218,
+        35.65830482005181
+      ],
+      "se": [
+        139.34183463686819,
+        35.65368994721539
+      ],
+      "sw": [
+        139.336180338354,
+        35.65366673889184
+      ]
+    },
+    "enu": {
+      "enu_to_grid": [
+        0.4999560171860996,
+        0.002514472020494654,
+        128.30872675155487,
+        0.0025144720212058997,
+        -0.49995601727622835,
+        127.21451070439484
+      ],
+      "grid_to_enu": [
+        2.000125354105795,
+        0.010059403364176482,
+        -257.9132396057694,
+        0.010059403363558199,
+        -2.000125353748691,
+        253.15425898713588
+      ],
+      "max_residual_m": 7.239739903752707e-05,
+      "origin_lonlat": [
+        139.339,
+        35.656
+      ],
+      "origin_height_ellipsoid": 0.0
+    },
+    "center_lonlat": [
+      139.339,
+      35.656
+    ],
+    "display": {
+      "height_offset_m": -107.98980712890625,
+      "base_tp_m": 107.98980712890625,
+      "note": "Cesium ellipsoidal height = T.P. + height_offset_m (globe without terrain)"
+    },
+    "codes": {
+      "0": "free",
+      "1": "building",
+      "255": "not judged (below ground / no data)"
+    },
+    "lods": {
+      "lod1": "LOD1 prism: footprint \u00d7 [ground, measured top]",
+      "lod2": "LOD2 vertical ray casting of roof/ground/installation surfaces"
+    },
+    "ground": {
+      "source": "\u56fd\u571f\u5730\u7406\u9662 \u6a19\u9ad8\u30bf\u30a4\u30eb (DEM5A\u2192DEM5B\u2192DEM10B)",
+      "pixels": {
+        "dem5a_png": 65536,
+        "dem5b_png": 0,
+        "dem_png": 0,
+        "missing": 0
+      }
+    },
+    "sources": {
+      "buildings": "\u56fd\u571f\u4ea4\u901a\u7701 Project PLATEAU 3D\u90fd\u5e02\u30e2\u30c7\u30eb (CityGML, \u5efa\u7bc9\u7269)",
+      "files": [
+        {
+          "mesh": "53393286",
+          "city_code": "13201",
+          "city_name": "\u516b\u738b\u5b50\u5e02",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/4a/ae4d7c-73fa-48d6-9c4d-ba0a52d6be26/13201_hachioji-shi_pref_2025_citygml_1_op/udx/bldg/53393286_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/4a/ae4d7c-73fa-48d6-9c4d-ba0a52d6be26/13201_hachioji-shi_pref_2025_citygml_1_op.zip"
+        },
+        {
+          "mesh": "53393287",
+          "city_code": "13201",
+          "city_name": "\u516b\u738b\u5b50\u5e02",
+          "year": 2025,
+          "spec": "5.0",
+          "url": "https://assets.cms.plateau.reearth.io/assets/4a/ae4d7c-73fa-48d6-9c4d-ba0a52d6be26/13201_hachioji-shi_pref_2025_citygml_1_op/udx/bldg/53393287_bldg_6697_op.gml",
+          "dataset_zip": "https://assets.cms.plateau.reearth.io/assets/4a/ae4d7c-73fa-48d6-9c4d-ba0a52d6be26/13201_hachioji-shi_pref_2025_citygml_1_op.zip"
+        }
+      ],
+      "license": "PLATEAU: CC BY 4.0 \u4e92\u63db\uff08PLATEAU\u5229\u7528\u898f\u7d04\uff09 / \u5730\u7406\u9662\u30bf\u30a4\u30eb: \u56fd\u571f\u5730\u7406\u9662\u30b3\u30f3\u30c6\u30f3\u30c4\u5229\u7528\u898f\u7d04"
+    },
+    "building_count": 541,
+    "generated_at": "2026-10-25T12:32:47+0000"
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}

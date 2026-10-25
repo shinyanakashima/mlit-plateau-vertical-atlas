@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:e2e": "node scripts/e2e.mjs && node scripts/e2e-mansion.mjs",
     "test:e2e:mansion": "node scripts/e2e-mansion.mjs",
+    "mansion:add": "python3 pipeline/add_mansion_area.py",
     "data:mansion": "python3 pipeline/build_atlas.py minato-shibaura && python3 pipeline/build_atlas.py tama-tachikawa",
     "data:synthetic": "python3 pipeline/build_synthetic.py",
     "data:tokyo": "python3 pipeline/build_atlas.py tokyo-station",

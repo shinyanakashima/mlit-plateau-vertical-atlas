@@ -65,5 +65,35 @@
     "meshes": "auto",
     "epsg": 6677,
     "mansion": true
+  },
+  "minato-roppongi": {
+    "title": "港区 六本木",
+    "subtitle": "六本木ヒルズ周辺 512m四方",
+    "center_lonlat": [
+      139.73,
+      35.6605
+    ],
+    "size_m": 512,
+    "dx_m": 2.0,
+    "dz_m": 2.0,
+    "z_min_tp": 0.0,
+    "meshes": "auto",
+    "epsg": 6677,
+    "mansion": true
+  },
+  "tama-hachioji": {
+    "title": "多摩 八王子",
+    "subtitle": "八王子駅周辺 512m四方",
+    "center_lonlat": [
+      139.339,
+      35.656
+    ],
+    "size_m": 512,
+    "dx_m": 2.0,
+    "dz_m": 2.0,
+    "z_min_tp": 0.0,
+    "meshes": "auto",
+    "epsg": 6677,
+    "mansion": true
   }
 }

@@ -1,9 +1,11 @@
 {
   "title": "東京は何階建て？",
-  "left": "minato-shibaura",
-  "right": "tama-tachikawa",
-  "leftLabel": "港区",
-  "rightLabel": "多摩",
   "defaultFloor": 9,
-  "floorHeightM": 10
+  "default": { "left": "minato-shibaura", "right": "tama-tachikawa" },
+  "areas": [
+    { "id": "minato-shibaura", "label": "港区", "name": "芝浦" },
+    { "id": "minato-roppongi", "label": "港区", "name": "六本木" },
+    { "id": "tama-tachikawa", "label": "多摩", "name": "立川" },
+    { "id": "tama-hachioji", "label": "多摩", "name": "八王子" }
+  ]
 }

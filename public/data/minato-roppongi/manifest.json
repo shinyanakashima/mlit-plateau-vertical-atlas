@@ -1,0 +1,47 @@
+{
+ "id": "minato-roppongi",
+ "title": "港区 六本木",
+ "subtitle": "六本木ヒルズ周辺 512m四方",
+ "kind": "plateau",
+ "zarr": "atlas.zarr",
+ "buildings": "buildings.json",
+ "models": {
+  "lod1": "lod1.glb",
+  "lod2": "lod2.glb"
+ },
+ "ortho": {
+  "file": "ortho.jpg",
+  "rectangle": [
+   139.72274780273438,
+   35.65394870599762,
+   139.73785400390625,
+   35.6673380324902
+  ],
+  "zoom": 18,
+  "layer": "seamlessphoto",
+  "attribution": "地理院タイル（全国最新写真・シームレス）"
+ },
+ "glb": {
+  "lod1": {
+   "vertices": 21276,
+   "triangles": 12724
+  },
+  "lod2": {
+   "vertices": 86756,
+   "triangles": 47376
+  }
+ },
+ "mansion": {
+  "models": {
+   "lod1": "lod1_abs.glb",
+   "lod2": "lod2_abs.glb"
+  },
+  "terrain": "terrain.glb",
+  "terrain_info": {
+   "vertices": 18693,
+   "triangles": 33794,
+   "base_tp": 0.0,
+   "step_cells": 2
+  }
+ }
+}

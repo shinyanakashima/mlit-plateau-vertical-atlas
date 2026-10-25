@@ -1,0 +1,47 @@
+{
+ "id": "tama-hachioji",
+ "title": "多摩 八王子",
+ "subtitle": "八王子駅周辺 512m四方",
+ "kind": "plateau",
+ "zarr": "atlas.zarr",
+ "buildings": "buildings.json",
+ "models": {
+  "lod1": "lod1.glb",
+  "lod2": "lod2.glb"
+ },
+ "ortho": {
+  "file": "ortho.jpg",
+  "rectangle": [
+   139.33135986328125,
+   35.649485098277204,
+   139.34646606445312,
+   35.66287517311727
+  ],
+  "zoom": 18,
+  "layer": "seamlessphoto",
+  "attribution": "地理院タイル（全国最新写真・シームレス）"
+ },
+ "glb": {
+  "lod1": {
+   "vertices": 35586,
+   "triangles": 21536
+  },
+  "lod2": {
+   "vertices": 55036,
+   "triangles": 34430
+  }
+ },
+ "mansion": {
+  "models": {
+   "lod1": "lod1_abs.glb",
+   "lod2": "lod2_abs.glb"
+  },
+  "terrain": "terrain.glb",
+  "terrain_info": {
+   "vertices": 18693,
+   "triangles": 33794,
+   "base_tp": 0.0,
+   "step_cells": 2
+  }
+ }
+}

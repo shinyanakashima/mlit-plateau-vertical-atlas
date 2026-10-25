@@ -33,7 +33,7 @@ export function describeFloor(stats: SectionStats, classes: Uint8Array, bid: Uin
   const g = stats.groundShare ?? 0
   const b = stats.buildingShare ?? 0
   if (g >= 90) return { kind: 'ground', headline: 'ほぼ地面の中', detail: `断面の${g.toFixed(0)}%が地盤` }
-  // tallest building cut by the section
+  // tallest building (with a known number of storeys) cut by the section
   let best: BuildingInfo | undefined
   if (bid) {
     const seen = new Set<number>()
@@ -41,7 +41,8 @@ export function describeFloor(stats: SectionStats, classes: Uint8Array, bid: Uin
       if (classes[i] !== CLASS_BUILDING || !bid[i] || seen.has(bid[i])) continue
       seen.add(bid[i])
       const info = building(bid[i])
-      if (info && !needsCheck(info) && (info.measuredHeight ?? 0) > (best?.measuredHeight ?? -1)) best = info
+      // the storey estimate needs storeys above ground; buildings without it are not named here
+      if (info && info.storeysAbove && (info.measuredHeight ?? 0) > (best?.measuredHeight ?? -1)) best = info
     }
   }
   if (g >= 10) {
