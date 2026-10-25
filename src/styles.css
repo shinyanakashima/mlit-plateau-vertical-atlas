@@ -306,3 +306,61 @@ kbd { background: var(--panel-3); border: 1px solid var(--border-strong); border
 .demo-title { font-size: 19px; font-weight: 700; margin-top: 6px; }
 .demo-body { color: var(--text-2); font-size: 14px; margin-top: 4px; line-height: 1.6; }
 .demo-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+
+/* ---------- phones / narrow screens: stack the 3D view, panel and charts ---------- */
+@media (max-width: 820px) {
+  html, body, #root { height: auto; }
+  body { overflow-x: hidden; overflow-y: auto; }
+  .app, .app.bottom-collapsed { display: flex; flex-direction: column; height: auto; min-height: 100vh; }
+  .header { flex-wrap: wrap; gap: 8px 10px; padding: 8px 12px; height: auto; }
+  .brand-mark { width: 26px; height: 26px; }
+  .brand-title { font-size: 15px; }
+  .brand-sub, .header-label, .header .badge, .header-spacer { display: none; }
+  .header-group { gap: 6px; }
+  .header-group:has(select) { order: 3; flex: 1 1 100%; }
+  .lod-desc, .demo-btn, .level-line { display: none; }
+  .header-group:has(select) .select { width: 100%; font-size: 13px; }
+  .header-group:last-child { margin-left: auto; overflow-x: auto; }
+  .header .btn { padding: 4px 8px; font-size: 12.5px; }
+  .header .btn.icon { width: 30px; height: 30px; }
+  .header .seg button { padding: 4px 8px; font-size: 12.5px; }
+
+  /* the 3D view stays at the top while the panel scrolls underneath */
+  .viewer-wrap { flex: none; position: sticky; top: 0; z-index: 6; height: 44vh; min-height: 260px; }
+  .overlay-tl { top: 8px; left: 8px; gap: 6px; }
+  .elev-hud { padding: 6px 10px; min-width: 0; }
+  .elev-hud .k { font-size: 10px; }
+  .elev-hud .v { font-size: 22px; }
+  .elev-hud .v small { font-size: 12px; }
+  .elev-hud .sub { font-size: 11px; }
+  .overlay-tr, .hover-tip { display: none; }
+  .overlay-bl { left: 8px; bottom: 22px; }
+  .overlay-bl { right: 8px; bottom: 20px; }
+  .legend { padding: 5px 8px; font-size: 10.5px; min-width: 0; display: flex; flex-wrap: wrap; gap: 2px 10px; }
+  .legend h4, .legend .ramp-labels { display: none; }
+  .legend .ramp { width: 60px; margin: 0; }
+  .legend-row { margin: 0; gap: 4px; }
+  .sw { width: 11px; height: 11px; }
+  .credits { left: 8px; right: 8px; bottom: 3px; font-size: 9.5px; }
+  .pick-banner { top: auto; bottom: 8px; width: calc(100% - 16px); font-size: 13px; }
+  .demo-bar { width: calc(100% - 16px); min-width: 0; bottom: 8px; padding: 10px 12px; }
+  .demo-title { font-size: 16px; }
+  .demo-body { font-size: 13px; }
+
+  .side { border-left: 0; border-top: 1px solid var(--border); }
+  .side .tabs { position: sticky; top: max(44vh, 260px); z-index: 5; overflow-x: auto; padding: 0 8px; }
+  .side-scroll { overflow: visible; padding: 12px; }
+  .metric .v { font-size: 18px; }
+
+  .bottom { flex: none; }
+  .bottom-head { flex-wrap: wrap; }
+  .bottom-head .note { display: none; }
+  .charts, .charts.two { grid-template-columns: minmax(0, 1fr); padding: 4px 12px 16px; }
+  .chart { height: 220px; }
+
+  .modal-veil { padding: 10px; }
+  .modal { padding: 16px; }
+  .modal h2 { font-size: 18px; }
+  .steps { grid-template-columns: 1fr; }
+  .loading-card { min-width: 0; width: calc(100% - 32px); }
+}
