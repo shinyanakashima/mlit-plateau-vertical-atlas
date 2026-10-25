@@ -51,7 +51,9 @@ CIから実行する場合は、`CLOUDFLARE_API_TOKEN`（権限：Cloudflare Pag
 
 1. Settings → Pages → Source を **GitHub Actions** にする
 2. Actions → **Deploy to GitHub Pages** → **Run workflow**
-3. 以降は `main` へのpushごとに自動で公開されます（公開URL：https://shinyanakashima.github.io/mlit-plateau-vertical-atlas/）
+3. 以降は `main` または `lt11-mansion` へのpushごとに、両方をビルドして1つのサイトとして自動で公開されます
+   - https://shinyanakashima.github.io/mlit-plateau-vertical-atlas/ … `main`（PLATEAU Vertical Atlas）
+   - https://shinyanakashima.github.io/mlit-plateau-vertical-atlas/lt11/ … `lt11-mansion`（東京は何階建て？）
 
 ## 大きなデータをR2に分ける場合（任意）
 

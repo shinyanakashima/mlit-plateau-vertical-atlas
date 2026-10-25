@@ -1,11 +1,14 @@
-# GitHub Pages deployment (static build) on every push to main, or manually from the Actions tab.
+# GitHub Pages: one site with both prototypes
+#   /            ← main          (PLATEAU Vertical Atlas)
+#   /lt11/       ← lt11-mansion  (東京は何階建て？)
+# Runs on every push to either branch (and manually).  The same file lives on both branches.
 # Requires Settings → Pages → Source: "GitHub Actions".
 name: Deploy to GitHub Pages
 
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, lt11-mansion]
 
 permissions:
   contents: read
@@ -14,22 +17,39 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+      - uses: actions/checkout@v4
+        with:
+          ref: lt11-mansion
+          path: lt11
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run build
+      - name: Build main (Vertical Atlas)
+        working-directory: main
+        run: npm ci && npm run build
+      - name: Build lt11-mansion (東京は何階建て？)
+        working-directory: lt11
+        run: npm ci && npm run build
+      - name: Assemble site
+        run: |
+          mkdir site
+          cp -r main/dist/. site/
+          mkdir site/lt11
+          cp -r lt11/dist/. site/lt11/
+          du -sh site
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: site
   deploy:
     needs: build
     runs-on: ubuntu-latest
