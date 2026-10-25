@@ -423,7 +423,7 @@ export default function App() {
               <div className="sub num">
                 地表から約{fmt(Math.max(0, elevation - groundTP), 0)} m ・ {floorLabel(elevation - groundTP)}
               </div>
-              <div className="sub num" style={{ color: 'var(--muted)' }}>
+              <div className="sub num level-line" style={{ color: 'var(--muted)' }}>
                 解析レベル {k + 1}/{atlas.grid.nz}（{fmt(atlas.grid.z0 + k * atlas.grid.dz, 0)}–{fmt(atlas.grid.z0 + (k + 1) * atlas.grid.dz, 0)} m）
               </div>
             </div>

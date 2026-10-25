@@ -44,12 +44,12 @@ export default function Header(p: Props) {
       <div className="header-group">
         <span className="header-label">建物形状</span>
         <div className="seg" role="radiogroup" aria-label="LOD">
-          <button className={p.lod === 'lod1' ? 'on' : ''} onClick={() => p.onLod('lod1')} title="LOD1: 建物を高さ一定の箱（押出し形状）として扱う">LOD1 箱型</button>
-          <button className={p.lod === 'lod2' ? 'on' : ''} onClick={() => p.onLod('lod2')} title="LOD2: 屋根形状・セットバックを反映">LOD2 屋根形状</button>
+          <button className={p.lod === 'lod1' ? 'on' : ''} onClick={() => p.onLod('lod1')} title="LOD1: 建物を高さ一定の箱（押出し形状）として扱う">LOD1<span className="lod-desc"> 箱型</span></button>
+          <button className={p.lod === 'lod2' ? 'on' : ''} onClick={() => p.onLod('lod2')} title="LOD2: 屋根形状・セットバックを反映">LOD2<span className="lod-desc"> 屋根形状</span></button>
         </div>
       </div>
       <div className="header-group">
-        <button className={`btn ${p.demoActive ? 'active' : ''}`} onClick={p.onDemo} title="LT用のガイド付きデモ（→で次へ）">{p.demoActive ? 'デモ終了' : '▶ LTデモ'}</button>
+        <button className={`btn demo-btn ${p.demoActive ? 'active' : ''}`} onClick={p.onDemo} title="LT用のガイド付きデモ（→で次へ）">{p.demoActive ? 'デモ終了' : '▶ LTデモ'}</button>
         <button className="btn" onClick={p.onHome} title="初期視点に戻る（H）">初期視点</button>
         <button className="btn" onClick={p.onTop} title="真上から見る（T）">真上</button>
         <button className="btn" onClick={p.onAbout}>出典・制約</button>
