@@ -29,6 +29,7 @@ const browser = await launch()
 const page = await browser.newPage({ viewport: { width: 1600, height: 900 } })
 const errors = []
 page.on('pageerror', (e) => errors.push(e.message))
+page.on('console', (m) => { if (m.type() === 'error' && /Rendering has stopped/.test(m.text())) errors.push(m.text().split('\n')[0]) })
 page.on('response', (r) => {
   if (r.status() >= 400 && r.url().includes('/data/')) errors.push(`HTTP ${r.status()} ${r.url()}`)
 })
@@ -94,6 +95,15 @@ await check('2-point connectivity resolves', async () => {
   await page.locator('.result .big').waitFor({ timeout: 20000 })
   const t = await page.locator('.result .big').innerText()
   if (!/T\.P\.|つながりません/.test(t)) throw new Error(`unexpected result: ${t}`)
+})
+
+await check('switching areas keeps the 3D view running', async () => {
+  await page.selectOption('select.select', 'nishi-shinjuku')
+  await page.locator('.elev-hud').waitFor({ timeout: 30000 })
+  await page.waitForTimeout(3000)
+  if (errors.some((e) => /Rendering has stopped/.test(e))) throw new Error('Cesium stopped rendering')
+  await page.selectOption('select.select', 'tokyo-station')
+  await page.locator('.elev-hud').waitFor({ timeout: 30000 })
 })
 
 await check('LT demo advances', async () => {
