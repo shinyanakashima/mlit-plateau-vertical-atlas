@@ -43,6 +43,8 @@ export default function MansionApp() {
   const [pick, setPick] = useState<{ left: string; right: string } | null>(null)
   const [speed, setSpeed] = useState<ElevatorSpeed>(loadSpeed)
   const [passing, setPassing] = useState<number | null>(null)
+  /** last floor the cabin actually arrived at (null until the first arrival) */
+  const [atFloor, setAtFloor] = useState<number | null>(null)
   const [areas, setAreas] = useState<AreaState[]>([])
   const [error, setError] = useState<string | null>(null)
   const [floor, setFloor] = useState(9)
@@ -184,6 +186,7 @@ export default function MansionApp() {
       if (p < 1) raf = requestAnimationFrame(tick)
       else {
         setArrived((n) => n + 1)
+        setAtFloor(floor)
         if (moved) {
           elevatorSound.chime(floor > prev! ? 1 : -1, ridingRef.current ? 0.6 : 1)
           elevatorSound.announce(floorAnnouncement(floor))
@@ -400,7 +403,8 @@ export default function MansionApp() {
       <FloorGuide
         floor={floor} maxFloor={maxFloor} onFloor={(f) => { elevatorSound.click(); setRiding(false); go(f) }}
         riding={riding} onRide={() => { elevatorSound.click(); setRiding((r) => !r) }}
-        speed={speed} onSpeed={(v) => { elevatorSound.click(); setSpeed(v); saveSpeed(v) }} passing={passing} table={table} labels={areas.map((a) => a.name)}
+        speed={speed} onSpeed={(v) => { elevatorSound.click(); setSpeed(v); saveSpeed(v) }}
+        passing={passing ?? (atFloor != null && atFloor !== floor ? atFloor : null)} table={table} labels={areas.map((a) => a.name)}
         progress={areas.map((a) => [a.loaded, a.atlas.grid.nz])} arrived={arrived}
       />
 

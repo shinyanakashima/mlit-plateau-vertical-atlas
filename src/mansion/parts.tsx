@@ -53,10 +53,11 @@ export function FloorGuide({ floor, maxFloor, onFloor, riding, onRide, table, la
     }
   }, [floor])
   const floors = Array.from({ length: maxFloor }, (_, i) => maxFloor - i)
-  const moving = passing != null && passing !== floor
+  // passing is the floor the cabin is in while moving; null once it has arrived
+  const moving = passing != null
   const shown = moving ? passing! : floor
   const [lo, hi] = floorRange(shown)
-  const up = moving ? floor > passing! : true
+  const up = moving ? floor >= passing! : true
   return (
     <aside className="mn-guide">
       <div className="mn-elevator">
